@@ -3,9 +3,9 @@
 *Actualízalo al final de cada sesión con lo que se completó*
 
 ## ESTADO DEL PROYECTO
-- [ ] Setup inicial Next.js + dependencias
-- [ ] Repositorio GitHub creado y conectado a Vercel
-- [ ] Skills personalizadas creadas con skill-creator
+- [x] Setup inicial Next.js + dependencias
+- [x] Repositorio GitHub creado (falta conectar a Vercel)
+- [x] Skills personalizadas creadas (.claude/skills/)
 - [ ] Fondo Three.js partículas warm
 - [ ] SECTION-HERO completo
 - [ ] SECTION-SERVICIOS completo (colapsado + expandido)
@@ -19,7 +19,7 @@
 - [ ] Deploy final
 
 ## REPOSITORIO
-- GitHub: [COMPLETAR]
+- GitHub: https://github.com/trxworkonline/joart-nails-studio
 - Vercel URL: [COMPLETAR]
 - Branch principal: main
 
@@ -37,9 +37,9 @@
 - Scroll bloqueado cuando card de servicio está expandida
 
 ## ÚLTIMA SESIÓN
-Fecha: [COMPLETAR]
-Qué se hizo: [COMPLETAR]
-Pendiente para próxima sesión: [COMPLETAR]
+Fecha: 2026-06-12
+Qué se hizo: setup inicial Next.js 14 (App Router, TS) en C:\Users\joaaa\dev\joart-nails-studio, Tailwind con paleta y tipografías JoArt, dependencias de animación instaladas (gsap, lenis, framer-motion, split-type, three), 7 skills personalizadas creadas en .claude/skills/, CLAUDE.md generado, repo GitHub creado y pusheado a main.
+Pendiente para próxima sesión: conectar Vercel al repo (lo hace Joan manualmente), luego empezar PASO de componentes: fondo Three.js, SECTION-HERO, SECTION-SERVICIOS, SECTION-CTA-FOOTER.
 
 ## NOTAS IMPORTANTES
 - Prioridad mobile 390px iPhone — diseño mobile first
