@@ -21,55 +21,51 @@ export default function Hero() {
     gsap.set([h1Ref.current, sub1Ref.current, sub2Ref.current, ctaRef.current], { opacity: 0 });
     gsap.set(manoWrapRef.current, { clipPath: 'inset(100% 0% 0% 0%)' });
 
-    const parser = new DOMParser();
-
     Promise.all([
       fetch('/assets/flores-hero-final.svg').then(r => r.text()),
       fetch('/assets/mano-hero-final.svg').then(r => r.text()),
     ]).then(([floresSvg, manoSvg]) => {
       if (dead || !floresWrapRef.current || !manoWrapRef.current) return;
 
+      // FIX 1: innerHTML es más fiable que DOMParser+appendChild para SVG en el DOM
       // --- FLORES ---
-      const floresDoc = parser.parseFromString(floresSvg, 'image/svg+xml');
-      const floresEl = floresDoc.querySelector('svg')!;
+      floresWrapRef.current.innerHTML = floresSvg;
+      const floresEl = floresWrapRef.current.querySelector('svg')!;
       floresEl.removeAttribute('width');
       floresEl.removeAttribute('height');
-      floresEl.style.cssText = 'width:100%;height:100%;display:block;position:absolute;top:0;left:0;';
-      floresWrapRef.current.appendChild(floresEl);
+      floresEl.style.cssText = 'width:100%;height:100%;display:block;';
 
       const floresPaths = Array.from(floresEl.querySelectorAll<SVGPathElement>('path'));
       floresPaths.forEach(path => {
         const length = path.getTotalLength();
-        gsap.set(path, {
-          fill: 'none',
-          stroke: '#A07860',
-          strokeWidth: 0.8,
-          strokeDasharray: length,
-          strokeDashoffset: length,
-        });
+        // Usar setAttribute (attr SVG) — más confiable que CSS property para stroke-dashoffset
+        path.setAttribute('fill', 'none');
+        path.setAttribute('stroke', '#A07860');
+        path.setAttribute('stroke-width', '0.8');
+        path.setAttribute('stroke-dasharray', String(length));
+        path.setAttribute('stroke-dashoffset', String(length));
       });
 
       // --- MANO ---
-      const manoDoc = parser.parseFromString(manoSvg, 'image/svg+xml');
-      const manoEl = manoDoc.querySelector('svg')!;
+      manoWrapRef.current.innerHTML = manoSvg;
+      const manoEl = manoWrapRef.current.querySelector('svg')!;
       manoEl.removeAttribute('width');
       manoEl.removeAttribute('height');
-      manoEl.style.cssText = 'width:100%;height:100%;display:block;position:absolute;top:0;left:0;';
+      manoEl.style.cssText = 'width:100%;height:100%;display:block;';
       manoEl.querySelectorAll('path').forEach(p => {
         p.removeAttribute('style');
         p.setAttribute('fill', '#A07860');
       });
-      manoWrapRef.current.appendChild(manoEl);
 
-      // --- TIMELINE ---
+      // --- GSAP TIMELINE ---
       tl = gsap.timeline();
 
       // 1. Logo
       tl.to(logoRef.current, { opacity: 1, duration: 0.6, ease: 'power2.out' }, 0);
 
-      // 2. Flores draw secuencial (p000 → p098)
+      // 2. Flores draw-on (stroke-dashoffset via attr plugin — garantiza animación de atributo SVG)
       tl.to(floresPaths, {
-        strokeDashoffset: 0,
+        attr: { 'stroke-dashoffset': 0 },
         duration: 0.4,
         ease: 'power1.out',
         stagger: 0.008,
@@ -83,14 +79,14 @@ export default function Hero() {
         0.9,
       );
 
-      // 4. Botón CTA
+      // 4. CTA scale-in
       tl.fromTo(
         ctaRef.current,
         { opacity: 0, scale: 0.95 },
         { opacity: 1, scale: 1, duration: 0.5, ease: 'back.out(1.4)' },
       );
 
-      // 5. Mano: reveal desde abajo hacia arriba
+      // 5. Mano reveal desde abajo
       tl.to(manoWrapRef.current, {
         clipPath: 'inset(0% 0% 0% 0%)',
         duration: 1,
@@ -107,6 +103,7 @@ export default function Hero() {
   const waHref = `https://wa.me/56931924796?text=${encodeURIComponent('Hola, vengo de tu web y me gustaría agendar una cita 💅')}`;
 
   return (
+    // FIX 2: Flexbox + clamp para responsive — no más position:absolute con top fijo en px
     <section
       className="relative overflow-hidden"
       style={{
@@ -115,23 +112,31 @@ export default function Hero() {
         maxWidth: 390,
         minHeight: '100dvh',
         margin: '0 auto',
+        display: 'flex',
+        flexDirection: 'column',
+        // paddingTop empuja el texto a ~28% del alto de pantalla en cualquier dispositivo
+        paddingTop: 'clamp(160px, 28dvh, 280px)',
+        paddingLeft: 24,
+        paddingRight: 24,
+        paddingBottom: 48,
+        boxSizing: 'border-box',
       }}
     >
-      {/* Mano ilustrada — overlay full-canvas, aparece en zona inferior */}
+      {/* Mano ilustrada — overlay full-canvas, z:1 (debajo de flores y texto) */}
       <div
         ref={manoWrapRef}
         className="absolute inset-0 pointer-events-none"
         style={{ zIndex: 1 }}
       />
 
-      {/* Flores botánicas — overlay full-canvas, zona superior derecha */}
+      {/* Flores botánicas — overlay full-canvas, z:2 */}
       <div
         ref={floresWrapRef}
         className="absolute inset-0 pointer-events-none"
         style={{ zIndex: 2 }}
       />
 
-      {/* Logo — esquina superior derecha */}
+      {/* Logo — esquina superior derecha, z:10 */}
       <div
         ref={logoRef}
         className="absolute"
@@ -147,15 +152,18 @@ export default function Hero() {
         />
       </div>
 
-      {/* Bloque de texto + CTA */}
-      <div
-        className="absolute"
-        style={{ top: 240, left: 24, right: 24, zIndex: 5 }}
-      >
+      {/* Bloque de texto + CTA — fluye dentro del flex, relativo al paddin-top */}
+      <div style={{ position: 'relative', zIndex: 5 }}>
+        {/* FIX 3: clamp() para escalar el H1 con el viewport */}
         <h1
           ref={h1Ref}
           className="font-playfair"
-          style={{ fontSize: 38, lineHeight: 1.15, color: '#A07860', margin: 0 }}
+          style={{
+            fontSize: 'clamp(32px, 9.5vw, 38px)',
+            lineHeight: 1.15,
+            color: '#A07860',
+            margin: 0,
+          }}
         >
           Joart<br />Nails Studio
         </h1>
@@ -176,6 +184,7 @@ export default function Hero() {
           Diseños personalizados. Resultados que duran.
         </p>
 
+        {/* FIX 4: glassmorphism — sin clases Tailwind que sobreescriban el background */}
         <a
           ref={ctaRef}
           href={waHref}
@@ -183,12 +192,12 @@ export default function Hero() {
           rel="noopener noreferrer"
           className="font-poppins font-bold uppercase"
           style={{
-            marginTop: 12,
-            width: 232,
-            height: 54,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
+            marginTop: 12,
+            width: 232,
+            height: 54,
             background: 'rgba(255,255,255,0.15)',
             backdropFilter: 'blur(12px)',
             WebkitBackdropFilter: 'blur(12px)',
