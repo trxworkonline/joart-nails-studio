@@ -146,7 +146,13 @@ export default function Hero() {
       <div
         ref={manoRef}
         className="absolute inset-0 pointer-events-none"
-        style={{ zIndex: 1, clipPath: 'inset(100% 0% 0% 0%)' }}
+        style={{
+          zIndex: 1,
+          clipPath: 'inset(100% 0% 0% 0%)',
+          // Dissolve the wrist cut — top 60% solid, fades to transparent
+          WebkitMaskImage: 'linear-gradient(to bottom, black 60%, transparent 100%)',
+          maskImage: 'linear-gradient(to bottom, black 60%, transparent 100%)',
+        }}
       />
 
       {/* Flores — overlay full-canvas z:2 */}
