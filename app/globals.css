@@ -28,6 +28,24 @@ body {
   }
 }
 
+/* Shine en tarjetas destacadas del grid y tarjeta info del modal — más sutil que el CTA */
+.tarjeta-shine {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    transparent,
+    rgba(255, 255, 255, 0.25),
+    transparent
+  );
+  animation: shine 4s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 3;
+}
+
 /* CTA shine — brillo sutil que recorre el botón en loop cada 3.5s */
 .cta-shine {
   position: absolute;
