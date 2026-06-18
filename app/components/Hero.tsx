@@ -37,6 +37,9 @@ export default function Hero() {
         floresEl.removeAttribute('width');
         floresEl.removeAttribute('height');
         floresEl.style.cssText = 'width:100%;height:100%;display:block;';
+        // xMaxYMin slice: alinea el ramo al borde derecho y lo escala para cubrir el
+        // contenedor en cualquier alto de pantalla — el exceso se recorta con overflow:hidden
+        floresEl.setAttribute('preserveAspectRatio', 'xMaxYMin slice');
 
         // requestAnimationFrame garantiza que el browser haya procesado el layout
         // antes de llamar getTotalLength() — sin esto puede devolver 0
@@ -162,8 +165,8 @@ export default function Hero() {
         <Image
           src="/assets/logo.png"
           alt="JoArt Nails Studio"
-          width={80}
-          height={80}
+          width={110}
+          height={110}
           style={{ objectFit: 'contain', mixBlendMode: 'multiply' }}
           priority
         />
@@ -201,14 +204,16 @@ export default function Hero() {
           Diseños personalizados. Resultados que duran.
         </p>
 
-        {/* CTA glassmorphism — sin clases Tailwind de background que lo sobreescriban */}
+        {/* CTA glassmorphism — Playfair + shine animado */}
         <a
           ref={ctaRef}
           href={waHref}
           target="_blank"
           rel="noopener noreferrer"
-          className="font-poppins font-bold uppercase"
+          className="font-playfair font-bold uppercase"
           style={{
+            position: 'relative',
+            overflow: 'hidden',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -221,13 +226,16 @@ export default function Hero() {
             border: '1px solid rgba(160,120,96,0.3)',
             borderRadius: 27,
             color: '#A07860',
-            letterSpacing: '0.08em',
+            letterSpacing: '0.12em',
             fontSize: 14,
             textDecoration: 'none',
             opacity: 0,  // GSAP anima a 1
           }}
         >
-          AGENDAR CITA
+          {/* Shine — pseudo-efecto de brillo que recorre el botón en loop */}
+          <span className="cta-shine" aria-hidden="true" />
+          {/* Texto por encima del shine */}
+          <span style={{ position: 'relative', zIndex: 1 }}>AGENDAR CITA</span>
         </a>
       </div>
     </section>
