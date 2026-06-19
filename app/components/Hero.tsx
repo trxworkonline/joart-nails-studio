@@ -150,8 +150,8 @@ export default function Hero() {
           zIndex: 1,
           clipPath: 'inset(100% 0% 0% 0%)',
           // Dissolve the wrist cut — top 60% solid, fades to transparent
-          WebkitMaskImage: 'linear-gradient(to bottom, black 60%, transparent 100%)',
-          maskImage: 'linear-gradient(to bottom, black 60%, transparent 100%)',
+          WebkitMaskImage: 'linear-gradient(to bottom, black 75%, transparent 100%)',
+          maskImage: 'linear-gradient(to bottom, black 75%, transparent 100%)',
         }}
       />
 

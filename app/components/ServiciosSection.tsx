@@ -3,6 +3,10 @@
 import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
 
 const WA_NUM = '56988210335';
 const waLink = (nombre: string) =>
@@ -148,7 +152,7 @@ type Servicio = (typeof servicios)[0];
 function Carrusel({ imagenes, nombre }: { imagenes: string[]; nombre: string }) {
   const [idx, setIdx]     = useState(0);
   const containerRef      = useRef<HTMLDivElement>(null);
-  const [width, setWidth] = useState(342); // 390 - 48 (side margins)
+  const [width, setWidth] = useState(342);
 
   useEffect(() => {
     const el = containerRef.current;
@@ -162,56 +166,52 @@ function Carrusel({ imagenes, nombre }: { imagenes: string[]; nombre: string }) 
   const clamp = (n: number) => Math.max(0, Math.min(imagenes.length - 1, n));
 
   return (
-    <>
-      {/* Image strip — border-radius + overflow on the wrapper */}
-      <div
-        ref={containerRef}
-        style={{
-          width: '100%',
-          height: 280,
-          borderRadius: 20,
-          overflow: 'hidden',
-          position: 'relative',
+    <div
+      ref={containerRef}
+      style={{ width: '100%', height: '100%', overflow: 'hidden', position: 'relative' }}
+    >
+      <motion.div
+        animate={{ x: -idx * width }}
+        transition={{ duration: 0.3, ease: [0.32, 0.72, 0, 1] }}
+        drag="x"
+        dragConstraints={{ left: -(imagenes.length - 1) * width, right: 0 }}
+        dragElastic={0.05}
+        onDragEnd={(_, info) => {
+          if (info.offset.x < -40) setIdx(i => clamp(i + 1));
+          else if (info.offset.x > 40) setIdx(i => clamp(i - 1));
         }}
+        style={{ display: 'flex', height: '100%', willChange: 'transform' }}
       >
-        <motion.div
-          animate={{ x: -idx * width }}
-          transition={{ duration: 0.3, ease: [0.32, 0.72, 0, 1] }}
-          drag="x"
-          dragConstraints={{ left: -(imagenes.length - 1) * width, right: 0 }}
-          dragElastic={0.05}
-          onDragEnd={(_, info) => {
-            if (info.offset.x < -40) setIdx(i => clamp(i + 1));
-            else if (info.offset.x > 40) setIdx(i => clamp(i - 1));
-          }}
-          style={{ display: 'flex', height: '100%', willChange: 'transform' }}
-        >
-          {imagenes.map((src, i) => (
-            <div
-              key={i}
-              style={{ flexShrink: 0, width, height: '100%', position: 'relative' }}
-            >
-              <Image
-                src={src}
-                alt={`${nombre} ${i + 1}`}
-                fill
-                style={{ objectFit: 'cover', userSelect: 'none', pointerEvents: 'none' }}
-                sizes="(max-width: 480px) calc(100vw - 48px), 432px"
-                priority={i === 0}
-                draggable={false}
-              />
-            </div>
-          ))}
-        </motion.div>
-      </div>
+        {imagenes.map((src, i) => (
+          <div
+            key={i}
+            style={{ flexShrink: 0, width, height: '100%', position: 'relative' }}
+          >
+            <Image
+              src={src}
+              alt={`${nombre} ${i + 1}`}
+              fill
+              style={{ objectFit: 'cover', userSelect: 'none', pointerEvents: 'none' }}
+              sizes="(max-width: 480px) calc(100vw - 48px), 432px"
+              priority={i === 0}
+              draggable={false}
+            />
+          </div>
+        ))}
+      </motion.div>
 
-      {/* Dots — below the image, not inside */}
+      {/* Dots inside image container, above the info card overlap zone */}
       <div style={{
+        position: 'absolute',
+        bottom: '12%',
+        left: 0,
+        right: 0,
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
         gap: 8,
-        marginTop: 12,
+        pointerEvents: 'none',
+        zIndex: 3,
       }}>
         {imagenes.map((_, i) => (
           <button
@@ -229,11 +229,12 @@ function Carrusel({ imagenes, nombre }: { imagenes: string[]; nombre: string }) 
               cursor: 'pointer',
               flexShrink: 0,
               transition: 'all 0.2s',
+              pointerEvents: 'all',
             }}
           />
         ))}
       </div>
-    </>
+    </div>
   );
 }
 
@@ -241,6 +242,7 @@ function Carrusel({ imagenes, nombre }: { imagenes: string[]; nombre: string }) 
 
 export default function ServiciosSection() {
   const [activo, setActivo] = useState<Servicio | null>(null);
+  const sectionRef = useRef<HTMLElement>(null);
 
   // Lock body scroll while modal is open
   useEffect(() => {
@@ -255,57 +257,84 @@ export default function ServiciosSection() {
     return () => window.removeEventListener('keydown', onKey);
   }, []);
 
+  // Grid entrance animations: left column slides from left, right column from right
+  useEffect(() => {
+    if (!sectionRef.current) return;
+    const ctx = gsap.context(() => {
+      gsap.from('.tarjeta-columna-izquierda', {
+        x: -40,
+        opacity: 0,
+        duration: 0.6,
+        ease: 'power2.out',
+        stagger: 0.15,
+        scrollTrigger: {
+          trigger: '#servicios',
+          start: 'top 75%',
+        },
+      });
+      gsap.from('.tarjeta-columna-derecha', {
+        x: 40,
+        opacity: 0,
+        duration: 0.6,
+        ease: 'power2.out',
+        stagger: 0.15,
+        scrollTrigger: {
+          trigger: '#servicios',
+          start: 'top 75%',
+        },
+      });
+    }, sectionRef.current);
+    return () => ctx.revert();
+  }, []);
+
   return (
     <>
       {/* ── GRID SECTION ──────────────────────────────────────────── */}
       <section
         id="servicios"
+        ref={sectionRef}
         style={{
           width: '100%',
           maxWidth: 390,
           margin: '0 auto',
-          // Bug 3 fix: 64px top padding separates Hero from Servicios
-          padding: '64px 24px 48px',
+          padding: '96px 24px 48px',
           boxSizing: 'border-box',
           backgroundColor: '#EDE3DC',
         }}
       >
-        {/* Section title */}
+        {/* Section title — centered */}
         <h2
           className="font-playfair"
           style={{
             fontSize: 'clamp(28px, 7vw, 34px)',
             color: '#A07860',
-            margin: '0 0 16px 0',
+            margin: '0 0 8px 0',
             lineHeight: 1.15,
+            textAlign: 'center',
           }}
         >
           Servicios
         </h2>
 
-        {/* Presentation copy */}
+        {/* Short copy — replaces previous long paragraph */}
         <p
           className="font-poppins"
           style={{
-            fontSize: 14,
+            fontSize: 15,
             color: '#7A6055',
             margin: '0 0 32px 0',
-            lineHeight: 1.7,
+            textAlign: 'center',
           }}
         >
-          En Joart Nails Studio combinamos técnica, precisión y un toque artístico en cada
-          detalle. Desde la elegancia atemporal de la manicura rusa hasta la versatilidad del
-          nail art en polygel, cada servicio está pensado para que tus manos y pies luzcan
-          impecables por semanas. Ubicados en el corazón de Ñuñoa, trabajamos con productos de
-          calidad premium y un cuidado meticuloso en cada sesión, porque sabemos que un buen
-          manicure no es solo estética: es la confianza que llevas contigo a todas partes.
+          Manicura rusa, nail art en polygel y más, en el corazón de Ñuñoa.
         </p>
 
         {/* Bento grid */}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-          {servicios.map(s => (
+          {servicios.map((s, i) => (
             <motion.div
               key={s.id}
+              className={i % 2 === 0 ? 'tarjeta-columna-izquierda' : 'tarjeta-columna-derecha'}
               whileTap={{ scale: 0.97 }}
               onClick={() => setActivo(s)}
               style={{
@@ -350,127 +379,123 @@ export default function ServiciosSection() {
               >
                 {s.nombre}
               </p>
-              {/* Shine on destacado cards */}
               {s.destacado && <span className="tarjeta-shine" aria-hidden="true" />}
             </motion.div>
           ))}
         </div>
+
+        {/* Closing paragraph after the grid */}
+        <p
+          className="font-poppins"
+          style={{
+            fontSize: 14,
+            color: '#7A6055',
+            lineHeight: 1.7,
+            textAlign: 'center',
+            maxWidth: 320,
+            margin: '40px auto 0',
+          }}
+        >
+          Cada servicio en Joart Nails Studio combina técnica, productos premium y un cuidado
+          meticuloso en cada sesión. Porque sabemos que un buen manicure no es solo estética:
+          es la confianza que llevas contigo a todas partes.
+        </p>
       </section>
 
       {/* ── MODAL ─────────────────────────────────────────────────── */}
       <AnimatePresence>
         {activo && (
-          <div key={activo.id} style={{ position: 'fixed', inset: 0, zIndex: 40 }}>
-
-            {/* Backdrop */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
-              onClick={() => setActivo(null)}
-              style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.5)' }}
-            />
-
-            {/* Modal panel — position:absolute so slide-up works; back button is absolute inside */}
-            <motion.div
-              initial={{ y: '100%' }}
-              animate={{ y: 0 }}
-              exit={{ y: '100%' }}
-              transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+          // Overlay — centered flex container, no dark background (intentional)
+          <motion.div
+            key={activo.id}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+            onClick={() => setActivo(null)}
+            style={{
+              position: 'fixed',
+              inset: 0,
+              zIndex: 50,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: '10vh 24px',
+            }}
+          >
+            {/* Back button — screen corner, outside the bloque */}
+            <button
+              autoFocus
+              onClick={e => { e.stopPropagation(); setActivo(null); }}
+              aria-label="Cerrar"
               style={{
                 position: 'absolute',
-                top: 0,
-                bottom: 0,
-                left: 0,
-                right: 0,
-                maxWidth: 480,
-                marginLeft: 'auto',
-                marginRight: 'auto',
-                backgroundColor: '#0f0d0c',
+                top: 24,
+                left: 24,
+                zIndex: 60,
+                width: 40,
+                height: 40,
+                borderRadius: '50%',
+                background: 'rgba(255,255,255,0.2)',
+                backdropFilter: 'blur(8px)',
+                WebkitBackdropFilter: 'blur(8px)',
+                border: 'none',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                padding: 0,
               }}
+            >
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                <path d="M12 4L6 10L12 16"
+                  stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </button>
+
+            {/* Bloque: image container + info card as one piece */}
+            <motion.div
+              initial={{ scale: 0.92, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+              onClick={e => e.stopPropagation()}
               role="dialog"
               aria-modal="true"
               aria-label={activo.nombre}
-            >
-              {/* Background image — very dark, gives glassmorphism something to blur */}
-              <div style={{ position: 'absolute', inset: 0, zIndex: 0, overflow: 'hidden' }}>
-                <Image
-                  src={activo.imagenes[0]}
-                  alt=""
-                  fill
-                  style={{ objectFit: 'cover', opacity: 0.18 }}
-                  sizes="480px"
-                  aria-hidden="true"
-                />
-                <div style={{
-                  position: 'absolute', inset: 0,
-                  background: 'linear-gradient(to bottom, rgba(15,13,12,0.55) 0%, rgba(15,13,12,0.25) 60%, rgba(15,13,12,0.1) 100%)',
-                }} />
-              </div>
-
-              {/* Back button — absolute within panel, sits above scrollable content */}
-              <button
-                autoFocus
-                onClick={() => setActivo(null)}
-                aria-label="Cerrar"
-                style={{
-                  position: 'absolute',
-                  top: 24,
-                  left: 24,
-                  zIndex: 20,
-                  width: 40,
-                  height: 40,
-                  borderRadius: '50%',
-                  background: 'rgba(255,255,255,0.2)',
-                  backdropFilter: 'blur(8px)',
-                  WebkitBackdropFilter: 'blur(8px)',
-                  border: 'none',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  cursor: 'pointer',
-                  padding: 0,
-                }}
-              >
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-                  <path d="M12 4L6 10L12 16"
-                    stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </button>
-
-              {/* Scrollable inner content */}
-              <div style={{
-                position: 'relative',
-                zIndex: 1,
-                height: '100%',
-                overflowY: 'auto',
+              style={{
+                width: '100%',
+                maxWidth: 342,
+                maxHeight: '100%',
                 display: 'flex',
                 flexDirection: 'column',
+              }}
+            >
+              {/* Image container — fills available vertical space */}
+              <div style={{
+                flex: 1,
+                minHeight: 0,
+                borderRadius: 24,
+                overflow: 'hidden',
+                position: 'relative',
+                zIndex: 1,
               }}>
-                {/* Spacer for back button + carousel */}
-                <div style={{ padding: '80px 24px 0', flexShrink: 0 }}>
-                  <Carrusel key={activo.id} imagenes={activo.imagenes} nombre={activo.nombre} />
-                  <div style={{ height: 16 }} />
-                </div>
+                <Carrusel key={activo.id} imagenes={activo.imagenes} nombre={activo.nombre} />
+              </div>
 
-                {/* Info card — glassmorphism clear, anchors to bottom */}
-                <div
-                  style={{
-                    position: 'relative',
-                    zIndex: 1,
-                    // Bug 1 fix: exact rgba values, no Tailwind bg classes
-                    background: 'rgba(255, 255, 255, 0.12)',
-                    backdropFilter: 'blur(20px)',
-                    WebkitBackdropFilter: 'blur(20px)',
-                    border: '1px solid rgba(255, 255, 255, 0.25)',
-                    borderRadius: '24px 24px 0 0',
-                    padding: 24,
-                    overflow: 'hidden',
-                    marginTop: 'auto',
-                  }}
-                >
-                {/* Shine for destacado info card */}
+              {/* Info card — overlaps image by 10%, height auto resolves BUG 2 */}
+              <div style={{
+                height: 'auto',
+                marginTop: '-10%',
+                borderRadius: 24,
+                position: 'relative',
+                zIndex: 2,
+                padding: 24,
+                background: 'rgba(255,255,255,0.08)',
+                backdropFilter: 'blur(24px)',
+                WebkitBackdropFilter: 'blur(24px)',
+                border: '1px solid rgba(255,255,255,0.2)',
+                overflow: 'hidden',
+              }}>
                 {activo.destacado && <span className="tarjeta-shine" aria-hidden="true" />}
 
                 {/* a) Nombre */}
@@ -497,7 +522,6 @@ export default function ServiciosSection() {
                   position: 'relative',
                   zIndex: 1,
                 }}>
-                  {/* Icon circle */}
                   <div style={{
                     flexShrink: 0,
                     width: 44,
@@ -510,7 +534,6 @@ export default function ServiciosSection() {
                   }}>
                     {getIcon(activo.icono)}
                   </div>
-                  {/* Description */}
                   <p
                     className="font-poppins"
                     style={{
@@ -543,7 +566,6 @@ export default function ServiciosSection() {
                   position: 'relative',
                   zIndex: 1,
                 }}>
-                  {/* Duración */}
                   <div style={{ textAlign: 'center' }}>
                     <p className="font-poppins" style={{
                       fontSize: 11,
@@ -561,9 +583,7 @@ export default function ServiciosSection() {
                       {activo.duracion}
                     </p>
                   </div>
-                  {/* Vertical divider */}
                   <div style={{ width: 1, height: 32, background: 'rgba(255,255,255,0.2)' }} />
-                  {/* Precio */}
                   <div style={{ textAlign: 'center' }}>
                     <p className="font-poppins" style={{
                       fontSize: 11,
@@ -583,7 +603,7 @@ export default function ServiciosSection() {
                   </div>
                 </div>
 
-                {/* e) CTA button "QUIERO ESTO" */}
+                {/* e) CTA button */}
                 <a
                   href={waLink(activo.nombre)}
                   target="_blank"
@@ -627,10 +647,9 @@ export default function ServiciosSection() {
                 >
                   {activo.nota}
                 </p>
-              </div>{/* end info card */}
-              </div>{/* end scrollable inner */}
+              </div>
             </motion.div>
-          </div>
+          </motion.div>
         )}
       </AnimatePresence>
     </>
