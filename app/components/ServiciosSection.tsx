@@ -150,6 +150,7 @@ type Servicio = (typeof servicios)[0];
 // ── Carousel ───────────────────────────────────────────────────────────────
 
 function Carrusel({ imagenes, nombre }: { imagenes: string[]; nombre: string }) {
+  console.log(`[Carrusel] "${nombre}" — ${imagenes.length} imágenes:`, imagenes);
   const [idx, setIdx]     = useState(0);
   const containerRef      = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState(342);
@@ -259,32 +260,42 @@ export default function ServiciosSection() {
 
   // Grid entrance animations: left column slides from left, right column from right
   useEffect(() => {
-    if (!sectionRef.current) return;
-    const ctx = gsap.context(() => {
-      gsap.from('.tarjeta-columna-izquierda', {
-        x: -40,
-        opacity: 0,
-        duration: 0.6,
-        ease: 'power2.out',
-        stagger: 0.15,
-        scrollTrigger: {
-          trigger: '#servicios',
-          start: 'top 75%',
-        },
-      });
-      gsap.from('.tarjeta-columna-derecha', {
-        x: 40,
-        opacity: 0,
-        duration: 0.6,
-        ease: 'power2.out',
-        stagger: 0.15,
-        scrollTrigger: {
-          trigger: '#servicios',
-          start: 'top 75%',
-        },
-      });
-    }, sectionRef.current);
-    return () => ctx.revert();
+    const seccionServicios = document.querySelector('#servicios');
+    if (!seccionServicios) {
+      console.warn('[ServiciosSection] #servicios no encontrado — ScrollTrigger no se registrará');
+      return;
+    }
+
+    const tl1 = gsap.from('.tarjeta-columna-izquierda', {
+      x: -40,
+      opacity: 0,
+      duration: 0.6,
+      ease: 'power2.out',
+      stagger: 0.15,
+      scrollTrigger: {
+        trigger: seccionServicios,
+        start: 'top 75%',
+        invalidateOnRefresh: true,
+      },
+    });
+
+    const tl2 = gsap.from('.tarjeta-columna-derecha', {
+      x: 40,
+      opacity: 0,
+      duration: 0.6,
+      ease: 'power2.out',
+      stagger: 0.15,
+      scrollTrigger: {
+        trigger: seccionServicios,
+        start: 'top 75%',
+        invalidateOnRefresh: true,
+      },
+    });
+
+    return () => {
+      tl1.scrollTrigger?.kill();
+      tl2.scrollTrigger?.kill();
+    };
   }, []);
 
   return (
