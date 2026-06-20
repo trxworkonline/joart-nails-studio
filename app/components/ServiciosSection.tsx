@@ -14,10 +14,10 @@ const waLink = (nombre: string) =>
 
 // ── SVG Icons ──────────────────────────────────────────────────────────────
 
-function ManicuraIcon() {
+function ManicuraIcon({ color = '#A07860' }: { color?: string }) {
   return (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
-      stroke="#A07860" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
       <path d="M9 20C9 15 10 9 12 7C14 9 15 15 15 20" />
       <path d="M9 20Q12 22 15 20" />
       <path d="M8 21.5Q12 23 16 21.5" />
@@ -25,10 +25,10 @@ function ManicuraIcon() {
   );
 }
 
-function PolygelIcon() {
+function PolygelIcon({ color = '#A07860' }: { color?: string }) {
   return (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
-      stroke="#A07860" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
       <path d="M9.5 21C9.5 16 10.5 8 12 4C13.5 8 14.5 16 14.5 21" />
       <path d="M9.5 21Q12 22.5 14.5 21" />
       <path d="M8.5 22.5Q12 23.5 15.5 22.5" />
@@ -36,10 +36,10 @@ function PolygelIcon() {
   );
 }
 
-function PedicuraIcon() {
+function PedicuraIcon({ color = '#A07860' }: { color?: string }) {
   return (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
-      stroke="#A07860" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
       <ellipse cx="5" cy="5" rx="1.8" ry="2.5" />
       <ellipse cx="9" cy="3.5" rx="1.8" ry="3" />
       <ellipse cx="13" cy="3.5" rx="1.8" ry="3" />
@@ -50,22 +50,22 @@ function PedicuraIcon() {
   );
 }
 
-function CejasIcon() {
+function CejasIcon({ color = '#A07860' }: { color?: string }) {
   return (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
-      stroke="#A07860" strokeWidth="1.5" strokeLinecap="round">
+      stroke={color} strokeWidth="1.5" strokeLinecap="round">
       <path d="M2 15Q6 6 13 7Q18 8 22 13" />
       <path d="M3 17.5Q7 9 13 10Q18 11 21.5 15.5" />
     </svg>
   );
 }
 
-function getIcon(key: string) {
+function getIcon(key: string, color?: string) {
   switch (key) {
-    case 'manicura': return <ManicuraIcon />;
-    case 'polygel':  return <PolygelIcon />;
-    case 'pedicura': return <PedicuraIcon />;
-    case 'cejas':    return <CejasIcon />;
+    case 'manicura': return <ManicuraIcon color={color} />;
+    case 'polygel':  return <PolygelIcon color={color} />;
+    case 'pedicura': return <PedicuraIcon color={color} />;
+    case 'cejas':    return <CejasIcon color={color} />;
     default: return null;
   }
 }
@@ -168,7 +168,7 @@ function Carrusel({ imagenes, nombre }: { imagenes: string[]; nombre: string }) 
   return (
     <div
       ref={containerRef}
-      style={{ width: '100%', height: '100%', overflow: 'hidden', position: 'relative' }}
+      style={{ position: 'absolute', inset: 0, overflow: 'hidden' }}
     >
       <motion.div
         animate={{ x: -idx * width }}
@@ -532,7 +532,7 @@ export default function ServiciosSection() {
                     alignItems: 'center',
                     justifyContent: 'center',
                   }}>
-                    {getIcon(activo.icono)}
+                    {getIcon(activo.icono, '#FFFFFF')}
                   </div>
                   <p
                     className="font-poppins"
@@ -595,7 +595,7 @@ export default function ServiciosSection() {
                     <p className="font-poppins" style={{
                       fontSize: 16,
                       fontWeight: 700,
-                      color: '#A07860',
+                      color: '#FFFFFF',
                       margin: 0,
                     }}>
                       {activo.precio}
