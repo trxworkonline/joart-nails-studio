@@ -492,10 +492,10 @@ export default function ServiciosSection() {
                 <Carrusel key={activo.id} imagenes={activo.imagenes} nombre={activo.nombre} />
               </div>
 
-              {/* Info card — overlaps image by 6%, height auto resolves BUG 2 */}
+              {/* Info card — fixed px overlap (not %, which scales with the card's own height), height auto resolves BUG 2 */}
               <div style={{
                 height: 'auto',
-                marginTop: '-6%',
+                marginTop: '-20px',
                 borderRadius: 24,
                 position: 'relative',
                 zIndex: 2,
