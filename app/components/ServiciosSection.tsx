@@ -150,7 +150,6 @@ type Servicio = (typeof servicios)[0];
 // ── Carousel ───────────────────────────────────────────────────────────────
 
 function Carrusel({ imagenes, nombre }: { imagenes: string[]; nombre: string }) {
-  console.log(`[Carrusel] "${nombre}" — ${imagenes.length} imágenes:`, imagenes);
   const [idx, setIdx]     = useState(0);
   const containerRef      = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState(342);
@@ -476,7 +475,7 @@ export default function ServiciosSection() {
               style={{
                 width: '100%',
                 maxWidth: 342,
-                maxHeight: '100%',
+                height: '100%',
                 display: 'flex',
                 flexDirection: 'column',
               }}
