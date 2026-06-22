@@ -427,19 +427,19 @@ export default function ServiciosSection() {
               position: 'fixed',
               inset: 0,
               zIndex: 50,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              padding: '10vh 24px 24px',
+              display: 'grid',
+              placeItems: 'center',
+              overflowY: 'auto',
+              padding: '24px',
             }}
           >
-            {/* Back button — screen corner, outside the bloque */}
+            {/* Back button — fixed to viewport, stays put even if the modal scrolls */}
             <button
               autoFocus
               onClick={e => { e.stopPropagation(); setActivo(null); }}
               aria-label="Cerrar"
               style={{
-                position: 'absolute',
+                position: 'fixed',
                 top: 24,
                 left: 24,
                 zIndex: 60,
@@ -475,30 +475,26 @@ export default function ServiciosSection() {
               style={{
                 width: '100%',
                 maxWidth: 342,
-                height: '100%',
                 display: 'flex',
                 flexDirection: 'column',
-                position: 'relative',
               }}
             >
-              {/* Image container — fills available vertical space */}
+              {/* Image container — fixed aspect-ratio, same visual size on every device regardless of available viewport height */}
               <div style={{
-                flex: 1,
-                minHeight: 0,
+                width: '100%',
+                aspectRatio: '4 / 5',
+                flexShrink: 0,
                 borderRadius: 24,
                 overflow: 'hidden',
                 position: 'relative',
-                zIndex: 1,
               }}>
                 <Carrusel key={activo.id} imagenes={activo.imagenes} nombre={activo.nombre} />
               </div>
 
-              {/* Info card — absolutely positioned so it floats over the image without competing for flex space */}
+              {/* Info card — back in normal flow below the image, just a small cosmetic overlap (doesn't shrink the image) */}
               <div style={{
-                position: 'absolute',
-                left: 0,
-                right: 0,
-                bottom: 0,
+                marginTop: -16,
+                position: 'relative',
                 borderRadius: 24,
                 zIndex: 2,
                 padding: 18,
@@ -553,6 +549,10 @@ export default function ServiciosSection() {
                       color: 'rgba(255,255,255,0.85)',
                       margin: 0,
                       lineHeight: 1.5,
+                      display: '-webkit-box',
+                      WebkitBoxOrient: 'vertical',
+                      WebkitLineClamp: 2,
+                      overflow: 'hidden',
                     }}
                   >
                     {activo.descripcion}
