@@ -433,36 +433,6 @@ export default function ServiciosSection() {
               padding: '24px',
             }}
           >
-            {/* Back button — fixed to viewport, stays put even if the modal scrolls */}
-            <button
-              autoFocus
-              onClick={e => { e.stopPropagation(); setActivo(null); }}
-              aria-label="Cerrar"
-              style={{
-                position: 'fixed',
-                top: 24,
-                left: 24,
-                zIndex: 60,
-                width: 40,
-                height: 40,
-                borderRadius: '50%',
-                background: 'rgba(255,255,255,0.2)',
-                backdropFilter: 'blur(8px)',
-                WebkitBackdropFilter: 'blur(8px)',
-                border: 'none',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                cursor: 'pointer',
-                padding: 0,
-              }}
-            >
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-                <path d="M12 4L6 10L12 16"
-                  stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </button>
-
             {/* Bloque: image container + info card as one piece */}
             <motion.div
               initial={{ scale: 0.92, opacity: 0 }}
@@ -477,6 +447,7 @@ export default function ServiciosSection() {
                 maxWidth: 342,
                 display: 'flex',
                 flexDirection: 'column',
+                position: 'relative',
               }}
             >
               {/* Image container — fixed aspect-ratio, same visual size on every device regardless of available viewport height */}
@@ -490,6 +461,36 @@ export default function ServiciosSection() {
               }}>
                 <Carrusel key={activo.id} imagenes={activo.imagenes} nombre={activo.nombre} />
               </div>
+
+              {/* Back button — anchored to the bloque's corner, sits right on the image */}
+              <button
+                autoFocus
+                onClick={e => { e.stopPropagation(); setActivo(null); }}
+                aria-label="Cerrar"
+                style={{
+                  position: 'absolute',
+                  top: 12,
+                  left: 12,
+                  zIndex: 60,
+                  width: 40,
+                  height: 40,
+                  borderRadius: '50%',
+                  background: 'rgba(255,255,255,0.2)',
+                  backdropFilter: 'blur(8px)',
+                  WebkitBackdropFilter: 'blur(8px)',
+                  border: 'none',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  padding: 0,
+                }}
+              >
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                  <path d="M12 4L6 10L12 16"
+                    stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </button>
 
               {/* Info card — back in normal flow below the image, just a small cosmetic overlap (doesn't shrink the image) */}
               <div style={{
