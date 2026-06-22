@@ -478,6 +478,7 @@ export default function ServiciosSection() {
                 height: '100%',
                 display: 'flex',
                 flexDirection: 'column',
+                position: 'relative',
               }}
             >
               {/* Image container — fills available vertical space */}
@@ -492,12 +493,13 @@ export default function ServiciosSection() {
                 <Carrusel key={activo.id} imagenes={activo.imagenes} nombre={activo.nombre} />
               </div>
 
-              {/* Info card — fixed px overlap (not %, which scales with the card's own height), height auto resolves BUG 2 */}
+              {/* Info card — absolutely positioned so it floats over the image without competing for flex space */}
               <div style={{
-                height: 'auto',
-                marginTop: '-20px',
+                position: 'absolute',
+                left: 0,
+                right: 0,
+                bottom: 0,
                 borderRadius: 24,
-                position: 'relative',
                 zIndex: 2,
                 padding: 24,
                 background: 'rgba(255,255,255,0.08)',
