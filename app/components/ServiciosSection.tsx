@@ -430,7 +430,7 @@ export default function ServiciosSection() {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              padding: '10vh 24px',
+              padding: '10vh 24px 24px',
             }}
           >
             {/* Back button — screen corner, outside the bloque */}
@@ -501,7 +501,7 @@ export default function ServiciosSection() {
                 bottom: 0,
                 borderRadius: 24,
                 zIndex: 2,
-                padding: 24,
+                padding: 18,
                 background: 'rgba(255,255,255,0.08)',
                 backdropFilter: 'blur(24px)',
                 WebkitBackdropFilter: 'blur(24px)',
@@ -514,9 +514,9 @@ export default function ServiciosSection() {
                 <h3
                   className="font-playfair"
                   style={{
-                    fontSize: 24,
+                    fontSize: 22,
                     color: '#FFFFFF',
-                    margin: '0 0 12px 0',
+                    margin: '0 0 8px 0',
                     lineHeight: 1.2,
                     position: 'relative',
                     zIndex: 1,
@@ -530,7 +530,7 @@ export default function ServiciosSection() {
                   display: 'flex',
                   alignItems: 'center',
                   gap: 12,
-                  marginBottom: 16,
+                  marginBottom: 10,
                   position: 'relative',
                   zIndex: 1,
                 }}>
@@ -549,7 +549,7 @@ export default function ServiciosSection() {
                   <p
                     className="font-poppins"
                     style={{
-                      fontSize: 13,
+                      fontSize: 11,
                       color: 'rgba(255,255,255,0.85)',
                       margin: 0,
                       lineHeight: 1.5,
@@ -564,7 +564,7 @@ export default function ServiciosSection() {
                   height: 1,
                   background: 'rgba(255,255,255,0.2)',
                   width: '100%',
-                  marginBottom: 16,
+                  marginBottom: 10,
                   position: 'relative',
                   zIndex: 1,
                 }} />
@@ -574,20 +574,20 @@ export default function ServiciosSection() {
                   display: 'flex',
                   justifyContent: 'space-around',
                   alignItems: 'center',
-                  marginBottom: 20,
+                  marginBottom: 14,
                   position: 'relative',
                   zIndex: 1,
                 }}>
                   <div style={{ textAlign: 'center' }}>
                     <p className="font-poppins" style={{
-                      fontSize: 11,
+                      fontSize: 9,
                       color: 'rgba(255,255,255,0.6)',
                       margin: '0 0 2px 0',
                     }}>
                       Duración
                     </p>
                     <p className="font-poppins" style={{
-                      fontSize: 16,
+                      fontSize: 14,
                       fontWeight: 700,
                       color: '#FFFFFF',
                       margin: 0,
@@ -598,14 +598,14 @@ export default function ServiciosSection() {
                   <div style={{ width: 1, height: 32, background: 'rgba(255,255,255,0.2)' }} />
                   <div style={{ textAlign: 'center' }}>
                     <p className="font-poppins" style={{
-                      fontSize: 11,
+                      fontSize: 9,
                       color: 'rgba(255,255,255,0.6)',
                       margin: '0 0 2px 0',
                     }}>
                       {activo.precioPrefijo}
                     </p>
                     <p className="font-poppins" style={{
-                      fontSize: 16,
+                      fontSize: 14,
                       fontWeight: 700,
                       color: '#FFFFFF',
                       margin: 0,
@@ -628,14 +628,14 @@ export default function ServiciosSection() {
                     alignItems: 'center',
                     justifyContent: 'center',
                     width: '100%',
-                    height: 50,
-                    borderRadius: 25,
+                    height: 44,
+                    borderRadius: 22,
                     background: '#A07860',
                     color: 'white',
-                    fontSize: 15,
+                    fontSize: 13,
                     letterSpacing: '0.1em',
                     textDecoration: 'none',
-                    marginBottom: 10,
+                    marginBottom: 8,
                     boxSizing: 'border-box',
                     zIndex: 1,
                   }}
@@ -648,7 +648,7 @@ export default function ServiciosSection() {
                 <p
                   className="font-poppins"
                   style={{
-                    fontSize: 11,
+                    fontSize: 9,
                     color: 'rgba(255,255,255,0.55)',
                     margin: 0,
                     lineHeight: 1.5,
