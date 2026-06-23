@@ -121,7 +121,7 @@ export default function Hero() {
     };
   }, []);
 
-  const waHref = `https://wa.me/56931924796?text=${encodeURIComponent('Hola, vengo de tu web y me gustaría agendar una cita 💅')}`;
+  const waHref = `https://wa.me/56988210335?text=${encodeURIComponent('Hola, vengo de tu web y me gustaría agendar una cita 💅')}`;
 
   return (
     <section
