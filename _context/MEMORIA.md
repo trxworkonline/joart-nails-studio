@@ -10,10 +10,10 @@
 - [x] SECTION-HERO completo
 - [x] SECTION-SERVICIOS completo (grid + modal con carrusel — varias rondas de fixes, ver abajo)
 - [x] SECTION-TESTIMONIOS completo (marquee CSS de comentarios reales de Instagram)
-- [ ] SECTION-CTA-FINAL-FOOTER — **en diseño, brainstorming casi cerrado, falta 1 decisión (ver "EN CURSO" abajo) antes de escribir la spec**
+- [x] SECTION-CTA-FINAL-FOOTER completo (`CTAFinalSection.tsx` + `Footer.tsx`, ver sesión 2026-06-23)
 - [ ] SVG botanicals animados (assets existen: flores-hero-final.svg, mano-hero-final.svg — usados estáticos en Hero, sin animación stroke-dashoffset todavía)
 - [ ] Globo de chat animado
-- [x] Flujo WhatsApp — funciona en Hero y en Servicios, **pero con dos números distintos (ver pendiente abajo)**
+- [x] Flujo WhatsApp — funciona en Hero, Servicios y CTA Final, todos con el mismo número real de negocio (`56988210335`) desde la sesión 2026-06-23
 - [ ] Lenis smooth scroll
 - [x] Optimización mobile 390px (prioridad en cada sección)
 - [ ] Deploy final / revisión completa
@@ -28,44 +28,30 @@
 - Flores botánicas: `public/assets/flores-hero-final.svg`
 - Logo JoArt: `public/assets/logo.png`
 - Fotos de servicios: `public/assets/servicios/` (18 PNGs reales: manicura-rusa, nails-polygel, pedicura-spa, perfilado-cejas)
-- **Pendiente**: 2 imágenes PNG de "frascos de esmalte" (botones de WhatsApp e Instagram para la sección CTA Final) — las está haciendo Joan, avisa cuando estén listas.
+- Botellas-botón del CTA Final: `public/assets/footer/esmalte-whatsapp.png` y `esmalte-instagram.png` (recortadas a su bounding box real — los originales en `OneDrive/Desktop/JoArt-Web/Elementos Visuales/WhatssapE.png` e `InstagramE.png` tenían ~40-45% de margen transparente alrededor del dibujo).
 
 ## DECISIONES TÉCNICAS TOMADAS
 - Sin barra de navegación (logo como ancla, top-left)
 - Glassmorphism clear en cards/modal de Servicios y Testimonios
-- WhatsApp: el número de negocio real es **56988210335** (usado en Servicios). Hero.tsx todavía tiene el número viejo `56931924796` — **pendiente unificar todos los botones de WhatsApp de toda la web a 56988210335** (se va a corregir junto con la implementación de la sección CTA Final).
+- WhatsApp: número de negocio real **56988210335**, unificado en Hero, Servicios y CTA Final desde la sesión 2026-06-23 (antes Hero.tsx tenía el viejo `56931924796`).
 - Testimonios: solo se usan comentarios reales de Instagram, sin inventar contenido y sin exponer nombre/usuario de clientas (decisión ética + privacidad, ver spec).
 - Colores realmente más usados en el código (no necesariamente los "oficiales" del token `--joart-brand`): `#A07860` (marrón cálido, el que más se repite — flores, mano, botones, íconos) y de fondo `#FFF9F4` (vainilla, el background de toda la página). El token documentado `--joart-brand: #7A5040` casi no se usa en la práctica.
-- Footer (CTA Final): va a llevar **solo** el crédito "Hecho por [marca/nombre de CenitDigitalPro]" con link al Instagram **personal** de Joan (`@jmdrade`) — el Instagram de la marca CenitDigitalPro está inactivo y es más de rubro inmobiliario, no aplica acá.
-- SEO: se va a agregar JSON-LD `LocalBusiness` (invisible, sin impacto visual) con nombre, área (Ñuñoa, Santiago), Instagram del negocio (@joart.cl), teléfono — en vez de agregar texto SEO visible al footer.
+- Footer: solo el crédito "Hecho por CenitDigitalPro" con link al Instagram **personal** de Joan (`@jmdrade`) — el Instagram de la marca CenitDigitalPro está inactivo y es más de rubro inmobiliario, no aplica acá.
+- SEO: JSON-LD `LocalBusiness` invisible agregado en `app/layout.tsx` (nombre, Ñuñoa/Santiago, teléfono, Instagram del negocio) — sin texto SEO visible en el footer.
 
-## EN CURSO — Sesión 2026-06-22 (CTA Final + Footer, brainstorming)
+## SESIÓN 2026-06-23 (CTA Final + Footer — implementación completa)
 
-Se está diseñando la última sección pendiente del sitio (`CTAFinalSection.tsx` + `Footer.tsx`), entre `TestimoniosSection` y el cierre del sitio. Diseño acordado hasta ahora:
+Spec: `docs/superpowers/specs/2026-06-23-cta-final-footer-design.md`. Commits: `63e44a0` (spec) y `793381f` (implementación).
 
-**Layout (asimétrico):**
-- Texto a la izquierda (copy enfocado en Instagram, ya que reservar por WhatsApp está cubierto en Hero/Servicios).
-- A la derecha, con padding generoso entre el texto y los botones (para que "respire"): **frasco de WhatsApp** (al medio, entre el texto y el frasco de Instagram) y **frasco de Instagram** (pegado al borde derecho — esa posición, no el tamaño, es lo que le da protagonismo a Instagram; ambos frascos son del mismo tamaño).
-- Cada frasco es un botón — al tocar, crece un poco (mismo patrón `whileTap` que ya se usa en las cards de Servicios).
-- Las imágenes de los frascos son PNG que Joan está creando — **mientras no estén listas, se implementa con un placeholder simple (forma de frasco en los colores de marca)**.
-- Instagram del negocio: `@joart.cl` (https://instagram.com/joart.cl). WhatsApp: número de negocio `56988210335`.
+- **Problema real detectado en los PNG de Joan** (`WhatssapE.png`/`InstagramE.png`): el frasco de Instagram tiene relleno opaco pero casi blanco (`#FDF8F2`), casi idéntico al fondo vainilla `#FFF9F4` — por eso "desaparecía" visualmente. El de WhatsApp sí tenía relleno café semi-opaco visible.
+- **Fix elegido:** halo de color en CSS detrás de cada botella (radial-gradient + blur), sin tocar el PNG original. Primer intento con `joart-blush` (`#F7D9E0`) para el halo de WhatsApp resultó casi invisible — ese color tiene muy poco contraste contra el fondo vainilla (diff de canal ~3x más chico que `joart-rose`). Se cambió a un halo color marrón (`#A07860`, el mismo del relleno de la propia botella) que sí tiene contraste real. Instagram quedó con halo `joart-rose` (`#E8B4C0`), que sí funcionaba bien desde el primer intento.
+- **Bug de overlap encontrado y corregido:** los PNG originales tienen ~40-45% de margen transparente alrededor del dibujo real (verificado escaneando el canal alfa con `System.Drawing` en PowerShell). Esto hacía que las dos botellas, aunque sus cajas (`width`/`height` en el componente) se superpusieran en el cálculo, se vieran con un hueco visual entre ellas en vez de "pegadas". Se resolvió recortando ambos PNG a su bounding box real de contenido (con padding chico) antes de usarlos — ahora el ancho/alto del componente corresponde al dibujo visible de verdad.
+- Profundidad escalonada final: Instagram 66×150px (adelante, ancla borde derecho), WhatsApp 60×132px (~88%, atrás, `bottom:10px` más arriba, ~11px de solape con Instagram).
+- Verificado con Playwright a 390×844 (capturas + muestreo de píxeles RGB para confirmar que los halos se ven realmente, no solo en el código) — los scripts y capturas se hicieron en una carpeta temporal dentro del repo (no en `/tmp` del sistema, que resultó no ser confiable entre llamadas de distintas herramientas en este entorno) y se borraron al terminar.
+- Copy final con saltos de línea (`<br/>`) puestos a mano para evitar palabras huérfanas en la columna angosta de texto — el primer intento de copy (“o escríbenos por WhatsApp.”) sí dejaba “WhatsApp.” solo en la última línea visual a pesar del `<br/>` manual, porque ese segundo tramo seguía siendo más largo que el ancho de columna y el navegador volvía a partirlo. Se acortó el copy en vez de seguir intentando forzar el corte exacto.
+- `npm run build` exitoso, sin errores de consola, JSON-LD validado, los 3 links (WhatsApp, Instagram, footer) confirmados apuntando a las URLs correctas.
 
-**Footer:**
-- Solo el crédito "Hecho por CenitDigitalPro" (texto exacto a confirmar), con link a `https://instagram.com/jmdrade` (Instagram personal de Joan).
-- Sin datos de contacto adicionales, sin aviso legal (no es necesario, el sitio no tiene formularios ni guarda datos).
-- SEO: JSON-LD `LocalBusiness` invisible, no afecta el footer visible.
-
-**Pendiente — única decisión abierta antes de escribir la spec:**
-Elegir la pareja de colores para que Joan pinte los frascos PNG. Dos opciones sobre la mesa:
-1. `#A07860` + `#E8B4C0` (recomendado: el marrón dominante real + el rosa "rose" oficial de la paleta, todavía sin usar en ningún componente — más coherente con la estética "feminidad botánica" del brief).
-2. `#A07860` + `#FFF9F4` (los 2 que literalmente más se repiten en el código hoy, pero el vainilla casi blanco se vería lavado como color de frasco).
-
-**Próximos pasos al retomar:**
-1. Cerrar la decisión de color (pregunta ya hecha a Joan, sin responder al momento de guardar esto).
-2. Escribir la spec en `docs/superpowers/specs/` (flujo de brainstorming ya en curso, falta presentar diseño final + escribir doc).
-3. Plan de implementación (`docs/superpowers/plans/`).
-4. Implementar: `CTAFinalSection.tsx`, `Footer.tsx`, fix del número de WhatsApp en `Hero.tsx`, JSON-LD LocalBusiness, integración en `page.tsx`.
-5. Placeholder de frascos hasta que Joan entregue los PNG reales — avisar cuando lleguen para swap final.
+**Pendiente real:** confirmación visual final de Joan en su dispositivo (igual que las secciones anteriores) — el push ya se hizo a pedido explícito antes de esa confirmación, así que si algo no se ve bien en el dispositivo real puede necesitar un ajuste fino después.
 
 ## SESIONES ANTERIORES (resumen consolidado)
 
