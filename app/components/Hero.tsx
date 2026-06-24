@@ -72,6 +72,17 @@ export default function Hero() {
 
         if (dead) return;
 
+        // Usuario pidió reducir movimiento: mostrar el estado final directo, sin timeline
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (prefersReducedMotion) {
+          gsap.set(logoRef.current, { opacity: 1 });
+          if (paths.length > 0) gsap.set(paths, { attr: { 'stroke-dashoffset': 0 } });
+          gsap.set([h1Ref.current, sub1Ref.current, sub2Ref.current], { opacity: 1, y: 0 });
+          gsap.set(ctaRef.current, { opacity: 1, scale: 1 });
+          gsap.set(manoRef.current, { clipPath: 'inset(0% 0% 0% 0%)' });
+          return;
+        }
+
         // --- GSAP TIMELINE ---
         const tl = gsap.timeline();
         tlRef.current = tl;

@@ -29,10 +29,12 @@ body {
 }
 
 /* Shine en tarjetas destacadas del grid y tarjeta info del modal — más sutil que el CTA */
+/* left:0 fijo + transform en vez de animar "left": transform es compositor-only,
+   no fuerza repintado en cada frame como animar "left" sí lo hacía. */
 .tarjeta-shine {
   position: absolute;
   top: 0;
-  left: -100%;
+  left: 0;
   width: 60%;
   height: 100%;
   background: linear-gradient(
@@ -44,13 +46,14 @@ body {
   animation: shine 4s ease-in-out infinite;
   pointer-events: none;
   z-index: 3;
+  will-change: transform;
 }
 
 /* CTA shine — brillo sutil que recorre el botón en loop cada 3.5s */
 .cta-shine {
   position: absolute;
   top: 0;
-  left: -100%;
+  left: 0;
   width: 60%;
   height: 100%;
   background: linear-gradient(
@@ -61,12 +64,16 @@ body {
   );
   animation: shine 3.5s ease-in-out infinite;
   pointer-events: none;
+  will-change: transform;
 }
 
+/* Equivalente a "left: -100% -> 150% -> 150%" pero con transform (translateX
+   es relativo al ancho del propio elemento, que es 60% del padre: -100%/0.6 = -166.67%,
+   150%/0.6 = 250%) */
 @keyframes shine {
-  0%   { left: -100%; }
-  50%  { left: 150%;  }
-  100% { left: 150%;  }
+  0%   { transform: translateX(-166.67%); }
+  50%  { transform: translateX(250%);  }
+  100% { transform: translateX(250%);  }
 }
 
 /* Marquee de testimonios — loop infinito izquierda→derecha, pista duplicada x2 */
@@ -84,7 +91,9 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .testimonios-track {
+  .testimonios-track,
+  .tarjeta-shine,
+  .cta-shine {
     animation: none;
   }
 }

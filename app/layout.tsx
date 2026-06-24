@@ -22,15 +22,36 @@ const poppins = Poppins({
   display: "swap",
 });
 
+const SITE_URL = "https://joart-web.vercel.app";
+const SITE_TITLE = "JoArt Nails Studio";
+const SITE_DESCRIPTION = "Manicura, pedicura y nail art en Ñuñoa, Santiago. Reserva por WhatsApp.";
+
 export const metadata: Metadata = {
-  title: "JoArt Nails Studio",
-  description: "Manicura, pedicura y nail art en Ñuñoa, Santiago. Reserva por WhatsApp.",
+  metadataBase: new URL(SITE_URL),
+  title: SITE_TITLE,
+  description: SITE_DESCRIPTION,
+  openGraph: {
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+    url: SITE_URL,
+    siteName: SITE_TITLE,
+    locale: "es_CL",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+  },
 };
 
 const localBusinessJsonLd = {
   "@context": "https://schema.org",
   "@type": "LocalBusiness",
   name: "JoArt Nails Studio",
+  url: SITE_URL,
+  image: `${SITE_URL}/opengraph-image`,
+  priceRange: "$6.990 - $27.990",
   address: {
     "@type": "PostalAddress",
     addressLocality: "Ñuñoa",

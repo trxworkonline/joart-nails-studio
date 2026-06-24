@@ -1,18 +1,19 @@
 'use client';
 
 import Image from 'next/image';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 
 export default function CTAFinalSection() {
   const waHref = `https://wa.me/56988210335?text=${encodeURIComponent('Hola, vengo de tu web y me gustaría agendar una cita 💅')}`;
   const igHref = 'https://instagram.com/joart.cl';
+  const shouldReduceMotion = useReducedMotion();
 
   return (
     <motion.section
-      initial={{ opacity: 0, y: 16 }}
+      initial={shouldReduceMotion ? false : { opacity: 0, y: 16 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.3 }}
-      transition={{ duration: 0.6, ease: 'easeOut' }}
+      transition={{ duration: shouldReduceMotion ? 0 : 0.6, ease: 'easeOut' }}
       style={{
         maxWidth: 390,
         margin: '0 auto',

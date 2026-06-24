@@ -209,7 +209,7 @@ function Carrusel({ imagenes, nombre }: { imagenes: string[]; nombre: string }) 
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        gap: 8,
+        gap: 4,
         pointerEvents: 'none',
         zIndex: 3,
       }}>
@@ -219,19 +219,31 @@ function Carrusel({ imagenes, nombre }: { imagenes: string[]; nombre: string }) 
             aria-label={`Imagen ${i + 1} de ${imagenes.length}`}
             onClick={() => setIdx(i)}
             style={{
-              width:   i === idx ? 8 : 6,
-              height:  i === idx ? 8 : 6,
-              borderRadius: '50%',
-              background: '#A07860',
-              opacity: i === idx ? 1 : 0.4,
+              width: 44,
+              height: 44,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              background: 'transparent',
               border: 'none',
               padding: 0,
               cursor: 'pointer',
               flexShrink: 0,
-              transition: 'all 0.2s',
               pointerEvents: 'all',
             }}
-          />
+          >
+            <span
+              aria-hidden="true"
+              style={{
+                width:  i === idx ? 8 : 6,
+                height: i === idx ? 8 : 6,
+                borderRadius: '50%',
+                background: '#A07860',
+                opacity: i === idx ? 1 : 0.4,
+                transition: 'all 0.2s',
+              }}
+            />
+          </button>
         ))}
       </div>
     </div>
@@ -259,6 +271,9 @@ export default function ServiciosSection() {
 
   // Grid entrance animations: left column slides from left, right column from right
   useEffect(() => {
+    // Usuario pidió reducir movimiento: las cards quedan en su estado final, sin animar
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
     const seccionServicios = document.querySelector('#servicios');
     if (!seccionServicios) {
       console.warn('[ServiciosSection] #servicios no encontrado — ScrollTrigger no se registrará');
