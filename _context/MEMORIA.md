@@ -21,7 +21,25 @@
 ## REPOSITORIO
 - GitHub: https://github.com/trxworkonline/joart-nails-studio
 - Vercel: conectado, auto-deploy funcionando en push a `main` (confirmado visualmente varias veces)
+- URL de producción: https://joart-web.vercel.app (sin dominio propio todavía — usado como base en metadataBase/sitemap/robots/JSON-LD; si se conecta un dominio propio hay que actualizar esa constante en `app/layout.tsx`, `app/robots.ts` y `app/sitemap.ts`)
 - Branch principal: main (todo el trabajo se hace directo en main, sin PRs/worktrees)
+
+## SESIÓN 2026-06-24 (auditoría SEO/UX + bloque de riesgo cero)
+
+Se hizo una auditoría completa (SEO + diseño/UX) usando la skill `ui-ux-pro-max` como referencia de checklist + lectura directa del código. Nota general dada: 7.3/10 — el sitio ya cumple el objetivo de "lucir premium" para el tráfico real (referido desde Instagram/WhatsApp), pero le falta SEO técnico básico y las piezas de animación que cerrarían la brecha con la ambición original "nivel Awwwards" (Three.js, Lenis, SVG animados — siguen pendientes).
+
+Implementado el bloque de **riesgo cero** (commit `0e81e9e`):
+- **Open Graph + Twitter Card** + `metadataBase` en `app/layout.tsx`, apuntando a `https://joart-web.vercel.app`.
+- **`app/opengraph-image.tsx`**: imagen social 1200×630 generada por código con `next/og` (`ImageResponse`), sin depender de ningún archivo de imagen externo. **Bug encontrado:** con el runtime por defecto (`nodejs`), `@vercel/og` falla en Windows al resolver una URL de fuente interna (`TypeError: Invalid URL` en `fileURLToPath`) — se resuelve agregando `export const runtime = 'edge'`. Si en el futuro se vuelve a tocar este archivo y aparece ese error, esa es la causa y el fix.
+- JSON-LD `LocalBusiness` enriquecido con `image`, `url`, `priceRange`.
+- `app/robots.ts` y `app/sitemap.ts` (convención de Next.js, generan `/robots.txt` y `/sitemap.xml`).
+- Dots del carrusel de Servicios: área táctil real de 44×44px (antes 6-8px) manteniendo el punto visual chico — el botón ahora es un cuadrado invisible con un `<span>` centrado adentro.
+- `prefers-reduced-motion` extendido a Hero (timeline GSAP completo salta al estado final sin animar), ServiciosSection (ScrollTrigger no se registra) y CTAFinalSection (via `useReducedMotion()` de Framer Motion) — antes solo lo respetaba el marquee de Testimonios.
+- Brillo (`.tarjeta-shine`/`.cta-shine`) cambiado de animar `left` a animar `transform: translateX()` — mismo resultado visual exacto (matemática: como el elemento mide 60% del padre, -100%/150% del padre equivalen a -166.67%/250% del propio elemento), pero ya no fuerza layout/repaint en cada frame.
+
+**Bug falso encontrado durante la verificación (anotado para no perder tiempo de nuevo):** en `npm run dev`, con React Strict Mode, 2 de las 4 cards del grid de Servicios quedaban en `opacity:0` permanentemente (atrapadas en el estado inicial de `gsap.from`) al probarlas con Playwright. **Se confirmó que es ruido de desarrollo, no un bug real:** contra `npm run build && npm run start` (producción), las 4 cards llegan a `opacity:1` sin problema. No tocar el código de animación de Servicios por este síntoma si vuelve a aparecer en dev — confirmar primero contra producción.
+
+**Pendiente para llegar a un 9/10 (acordado con el usuario, próxima etapa):** Three.js (fondo de partículas), Lenis (smooth scroll), SVG botanicals animados al hacer scroll — esto sí tiene riesgo técnico real (Lenis puede chocar con el scroll bloqueado del modal de Servicios) y se va a implementar de a una cosa por vez, con verificación real después de cada una.
 
 ## ASSETS DISPONIBLES
 - Mano ilustrada: `public/assets/mano-hero-final.svg`
