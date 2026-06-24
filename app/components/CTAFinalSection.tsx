@@ -19,25 +19,26 @@ export default function CTAFinalSection() {
         padding: '96px 24px 64px',
         boxSizing: 'border-box',
         display: 'flex',
+        flexDirection: 'column',
         alignItems: 'center',
-        gap: 20,
+        textAlign: 'center',
       }}
     >
-      {/* Columna texto — flex:1, toma el espacio restante */}
-      <div style={{ flex: 1 }}>
+      {/* Texto — centrado arriba, mismo tratamiento de h2 que Servicios/Testimonios */}
+      <div>
         <h2
           className="font-playfair"
-          style={{ color: '#A07860', fontSize: 'clamp(24px, 7.5vw, 30px)', lineHeight: 1.15, margin: 0 }}
+          style={{ color: '#A07860', fontSize: 'clamp(28px, 7vw, 34px)', lineHeight: 1.15, margin: 0 }}
         >
-          Sigue el<br />proceso
+          Sigue el proceso
         </h2>
-        <p className="font-poppins" style={{ color: '#8B6A6A', fontSize: 14, marginTop: 8 }}>
-          Míranos en Instagram<br />o escríbenos ya.
+        <p className="font-poppins" style={{ color: '#8B6A6A', fontSize: 15, marginTop: 10 }}>
+          Míranos en Instagram o escríbenos ya.
         </p>
       </div>
 
-      {/* Columna botellas — ancho fijo por contenido, ancla al borde derecho */}
-      <div style={{ position: 'relative', width: 115, height: 150, flex: '0 0 auto' }}>
+      {/* Botellas — centradas abajo, mismo efecto de profundidad escalonada, a mayor escala */}
+      <div style={{ position: 'relative', width: 162, height: 210, marginTop: 48 }}>
         {/* WhatsApp — atrás, más chica, desplazada arriba-izquierda */}
         <motion.a
           href={waHref}
@@ -45,7 +46,7 @@ export default function CTAFinalSection() {
           rel="noopener noreferrer"
           aria-label="Escríbenos por WhatsApp"
           whileTap={{ scale: 0.93 }}
-          style={{ position: 'absolute', left: 0, bottom: 10, width: 60, height: 132, zIndex: 1, display: 'block' }}
+          style={{ position: 'absolute', left: 0, bottom: 14, width: 84, height: 185, zIndex: 1, display: 'block' }}
         >
           <span
             aria-hidden="true"
@@ -53,21 +54,21 @@ export default function CTAFinalSection() {
               position: 'absolute',
               top: '70%',
               left: '50%',
-              width: 90,
-              height: 90,
+              width: 126,
+              height: 126,
               transform: 'translate(-50%, -50%)',
               borderRadius: '50%',
               background:
                 'radial-gradient(circle, rgba(160,120,96,0.55) 0%, rgba(160,120,96,0.3) 40%, rgba(160,120,96,0) 72%)',
-              filter: 'blur(10px)',
+              filter: 'blur(14px)',
               zIndex: 0,
             }}
           />
           <Image
             src="/assets/footer/esmalte-whatsapp.png"
             alt="Escríbenos por WhatsApp"
-            width={60}
-            height={132}
+            width={84}
+            height={185}
             style={{ position: 'relative', zIndex: 1, width: '100%', height: '100%', objectFit: 'contain' }}
           />
         </motion.a>
@@ -79,7 +80,7 @@ export default function CTAFinalSection() {
           rel="noopener noreferrer"
           aria-label="Síguenos en Instagram"
           whileTap={{ scale: 0.93 }}
-          style={{ position: 'absolute', right: 0, bottom: 0, width: 66, height: 150, zIndex: 2, display: 'block' }}
+          style={{ position: 'absolute', right: 0, bottom: 0, width: 93, height: 210, zIndex: 2, display: 'block' }}
         >
           <span
             aria-hidden="true"
@@ -87,21 +88,21 @@ export default function CTAFinalSection() {
               position: 'absolute',
               top: '70%',
               left: '50%',
-              width: 100,
-              height: 100,
+              width: 140,
+              height: 140,
               transform: 'translate(-50%, -50%)',
               borderRadius: '50%',
               background:
                 'radial-gradient(circle, rgba(232,180,192,0.95) 0%, rgba(232,180,192,0.55) 40%, rgba(232,180,192,0) 72%)',
-              filter: 'blur(10px)',
+              filter: 'blur(14px)',
               zIndex: 0,
             }}
           />
           <Image
             src="/assets/footer/esmalte-instagram.png"
             alt="Síguenos en Instagram"
-            width={66}
-            height={150}
+            width={93}
+            height={210}
             style={{ position: 'relative', zIndex: 1, width: '100%', height: '100%', objectFit: 'contain' }}
           />
         </motion.a>
