@@ -57,6 +57,8 @@ Verificado: `npm run build` sin errores TS/lint, `npm run dev` levantó y respon
 
 **Siguiente paso del roadmap 9/10:** SVG botanicals animados (stroke-dashoffset al hacer scroll), después Lenis al final (es el que más puede chocar con cosas existentes — ScrollTrigger de Servicios, scroll bloqueado del modal).
 
+**Ajuste mismo día (commit `7f5a1e1`):** Joan probó en su celular vía Vercel y pidió 2 cosas — (1) las partículas se veían cuadradas (`PointsMaterial` sin `map` dibuja sprites cuadrados por defecto): se agregó una textura circular generada por canvas (radial gradient blanco→transparente) como `map`/`alphaMap`. (2) Agregar el mismo fondo a la sección Servicios. `ParticleScene` ahora acepta prop `density: 'normal' | 'subtle'` (Hero sigue en 'normal' 120/300, Servicios usa 'subtle' 60/150 porque queda mayormente tapado por el grid de cards). **Detalle de stacking importante si se reutiliza este patrón de nuevo:** en Servicios el título/grid no tenían `position` propio (a diferencia del Hero, donde todo ya estaba posicionado) — un canvas absoluto con z-index:0 como hermano de contenido *estático* pintaría POR ENCIMA del contenido, no detrás, por las reglas de stacking de CSS (los elementos no posicionados pintan antes que los posicionados de nivel 0). Se resolvió envolviendo todo el contenido de la sección en un `<div style={{position:'relative', zIndex:1}}>`. Si se agrega `ParticleBackground` a otra sección (CTA Final, Testimonios), revisar primero si su contenido ya tiene `position`/`zIndex` explícito o si necesita el mismo wrapper.
+
 ## ASSETS DISPONIBLES
 - Mano ilustrada: `public/assets/mano-hero-final.svg`
 - Flores botánicas: `public/assets/flores-hero-final.svg`
