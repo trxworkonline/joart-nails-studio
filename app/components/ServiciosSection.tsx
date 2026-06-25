@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import ParticleBackground from './ParticleBackground';
+import { useLenis } from './LenisProvider';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -256,12 +257,19 @@ function Carrusel({ imagenes, nombre }: { imagenes: string[]; nombre: string }) 
 export default function ServiciosSection() {
   const [activo, setActivo] = useState<Servicio | null>(null);
   const sectionRef = useRef<HTMLElement>(null);
+  const lenis = useLenis();
 
-  // Lock body scroll while modal is open
+  // Lock body scroll while modal is open — overflow:hidden cubre el caso sin
+  // Lenis (reduced motion / fallo de init); lenis.stop()/start() es el control
+  // real, porque Lenis puede seguir moviendo el scroll sin depender de ese CSS
   useEffect(() => {
     document.body.style.overflow = activo ? 'hidden' : '';
-    return () => { document.body.style.overflow = ''; };
-  }, [activo]);
+    if (activo) lenis?.stop(); else lenis?.start();
+    return () => {
+      document.body.style.overflow = '';
+      lenis?.start();
+    };
+  }, [activo, lenis]);
 
   // Escape closes modal
   useEffect(() => {

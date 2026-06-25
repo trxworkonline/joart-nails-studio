@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Playfair_Display, Pinyon_Script, Poppins } from "next/font/google";
 import "./globals.css";
+import LenisProvider from "./components/LenisProvider";
 
 const playfairDisplay = Playfair_Display({
   subsets: ["latin"],
@@ -76,7 +77,7 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessJsonLd) }}
         />
-        {children}
+        <LenisProvider>{children}</LenisProvider>
       </body>
     </html>
   );
