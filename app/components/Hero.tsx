@@ -3,6 +3,7 @@
 import { useEffect, useRef } from 'react';
 import Image from 'next/image';
 import gsap from 'gsap';
+import ParticleBackground from './ParticleBackground';
 
 export default function Hero() {
   const logoRef    = useRef<HTMLDivElement>(null);
@@ -153,6 +154,9 @@ export default function Hero() {
         boxSizing: 'border-box',
       }}
     >
+      {/* Fondo de partículas Three.js — z:0, detrás de todo el contenido del Hero */}
+      <ParticleBackground />
+
       {/* Mano — overlay full-canvas z:1; clipPath inicial en JSX */}
       <div
         ref={manoRef}
