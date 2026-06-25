@@ -6,7 +6,7 @@
 - [x] Setup inicial Next.js + dependencias
 - [x] Repositorio GitHub creado y conectado a Vercel (auto-deploy en push a main — confirmado funcionando)
 - [x] Skills personalizadas creadas (.claude/skills/)
-- [ ] Fondo Three.js partículas warm (instalado pero sin implementar)
+- [x] Fondo Three.js partículas warm (acotado al Hero — ver sesión 2026-06-25)
 - [x] SECTION-HERO completo
 - [x] SECTION-SERVICIOS completo (grid + modal con carrusel — varias rondas de fixes, ver abajo)
 - [x] SECTION-TESTIMONIOS completo (marquee CSS de comentarios reales de Instagram)
@@ -40,6 +40,22 @@ Implementado el bloque de **riesgo cero** (commit `0e81e9e`):
 **Bug falso encontrado durante la verificación (anotado para no perder tiempo de nuevo):** en `npm run dev`, con React Strict Mode, 2 de las 4 cards del grid de Servicios quedaban en `opacity:0` permanentemente (atrapadas en el estado inicial de `gsap.from`) al probarlas con Playwright. **Se confirmó que es ruido de desarrollo, no un bug real:** contra `npm run build && npm run start` (producción), las 4 cards llegan a `opacity:1` sin problema. No tocar el código de animación de Servicios por este síntoma si vuelve a aparecer en dev — confirmar primero contra producción.
 
 **Pendiente para llegar a un 9/10 (acordado con el usuario, próxima etapa):** Three.js (fondo de partículas), Lenis (smooth scroll), SVG botanicals animados al hacer scroll — esto sí tiene riesgo técnico real (Lenis puede chocar con el scroll bloqueado del modal de Servicios) y se va a implementar de a una cosa por vez, con verificación real después de cada una.
+
+## SESIÓN 2026-06-25 (fondo Three.js partículas — primer paso de la etapa hacia el 9/10)
+
+Commit: `f2ea212` — "feat: agrega fondo de particulas Three.js al Hero". Spec: `docs/superpowers/specs/2026-06-25-hero-particle-background-design.md` (reemplaza/supera al spec viejo `2026-06-12-particle-background-lenis-design.md`, que nunca se implementó y planteaba un fondo global con Lenis — descartado porque cada sección tiene su propio `backgroundColor` sólido, así que un fondo fixed global quedaría tapado).
+
+**Decisión de alcance (acordada con el usuario):** el fondo de partículas queda acotado **solo al Hero**, no a toda la página — es el cambio más aislado de los 3 pendientes (Three.js / SVG botanicals / Lenis), consistente con la estrategia de "uno por uno para no romper varias cosas a la vez".
+
+Archivos nuevos:
+- `app/components/ParticleBackground.tsx` — wrapper `dynamic(..., { ssr: false })`.
+- `app/components/ParticleScene.tsx` — Three.js vanilla (no react-three-fiber, para no introducir un patrón distinto al resto del código que es todo imperativo con refs+GSAP): `Points` único con `BufferGeometry`, colores `#F7D9E0`/`#E8B4C0`/blanco, `AdditiveBlending`. 120 partículas en mobile (<768px) / 300 en desktop, decidido una sola vez al montar.
+
+Comportamiento: **flotación 100% autónoma** — sin reaccionar a mouse ni scroll (decisión explícita: el Hero es la primera pantalla, Lenis todavía no existe en el proyecto). Drift lento vía `Math.sin`, período aleatorio 8-14s por partícula y por eje, amplitud baja (~0.4 unidades en una escena de rango -10..10) — buscado a propósito "polvo flotando", nunca brusco, acorde a la estética femenina/botánica del sitio. Respeta `prefers-reduced-motion` (partículas estáticas). Pausa el loop en `visibilitychange`. Cleanup completo de geometry/material/renderer en unmount.
+
+Verificado: `npm run build` sin errores TS/lint, `npm run dev` levantó y respondió 200. **Pendiente: confirmación visual real de Joan en su celular vía Vercel** (igual que las secciones anteriores) — el push ya está hecho para que el auto-deploy lo refleje.
+
+**Siguiente paso del roadmap 9/10:** SVG botanicals animados (stroke-dashoffset al hacer scroll), después Lenis al final (es el que más puede chocar con cosas existentes — ScrollTrigger de Servicios, scroll bloqueado del modal).
 
 ## ASSETS DISPONIBLES
 - Mano ilustrada: `public/assets/mano-hero-final.svg`
