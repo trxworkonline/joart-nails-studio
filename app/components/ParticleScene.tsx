@@ -6,7 +6,31 @@ import * as THREE from 'three';
 const PALETTE = [0xF7D9E0, 0xE8B4C0, 0xFFFFFF];
 const AMPLITUDE = 0.4; // ~3-5% del rango de la escena (-10..10)
 
-export default function ParticleScene() {
+type Density = 'normal' | 'subtle';
+
+const COUNTS: Record<Density, { mobile: number; desktop: number }> = {
+  normal: { mobile: 120, desktop: 300 },
+  subtle: { mobile: 60, desktop: 150 },
+};
+
+// Sprite circular generado por canvas — sin esto PointsMaterial dibuja cuadrados
+function createCircleTexture(): THREE.Texture {
+  const canvas = document.createElement('canvas');
+  canvas.width = 64;
+  canvas.height = 64;
+  const ctx = canvas.getContext('2d')!;
+  const gradient = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
+  gradient.addColorStop(0, 'rgba(255,255,255,1)');
+  gradient.addColorStop(0.5, 'rgba(255,255,255,0.6)');
+  gradient.addColorStop(1, 'rgba(255,255,255,0)');
+  ctx.fillStyle = gradient;
+  ctx.fillRect(0, 0, 64, 64);
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.needsUpdate = true;
+  return texture;
+}
+
+export default function ParticleScene({ density = 'normal' }: { density?: Density }) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -18,11 +42,13 @@ export default function ParticleScene() {
     let renderer: THREE.WebGLRenderer | null = null;
     let geometry: THREE.BufferGeometry | null = null;
     let material: THREE.PointsMaterial | null = null;
+    let sprite: THREE.Texture | null = null;
     let handleResize: (() => void) | null = null;
     let handleVisibility: (() => void) | null = null;
 
     try {
-      const count = window.innerWidth < 768 ? 120 : 300;
+      const tier = COUNTS[density];
+      const count = window.innerWidth < 768 ? tier.mobile : tier.desktop;
       const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
       const scene = new THREE.Scene();
@@ -70,8 +96,12 @@ export default function ParticleScene() {
       geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
       geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
 
+      sprite = createCircleTexture();
+
       material = new THREE.PointsMaterial({
-        size: 0.12,
+        size: 0.16,
+        map: sprite,
+        alphaMap: sprite,
         vertexColors: true,
         transparent: true,
         opacity: 0.6,
@@ -134,6 +164,7 @@ export default function ParticleScene() {
       if (handleResize) window.removeEventListener('resize', handleResize);
       geometry?.dispose();
       material?.dispose();
+      sprite?.dispose();
       if (renderer) {
         renderer.dispose();
         if (container.contains(renderer.domElement)) {
@@ -141,7 +172,7 @@ export default function ParticleScene() {
         }
       }
     };
-  }, []);
+  }, [density]);
 
   return (
     <div

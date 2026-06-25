@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import ParticleBackground from './ParticleBackground';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -319,6 +320,8 @@ export default function ServiciosSection() {
         id="servicios"
         ref={sectionRef}
         style={{
+          position: 'relative',
+          overflow: 'hidden',
           width: '100%',
           maxWidth: 390,
           margin: '0 auto',
@@ -327,6 +330,14 @@ export default function ServiciosSection() {
           backgroundColor: '#EDE3DC',
         }}
       >
+        {/* Fondo de partículas Three.js — z:0, mismo componente que el Hero pero más sutil
+            (se ve poco detrás del grid de cards, pero da textura/cohesión visual) */}
+        <ParticleBackground density="subtle" />
+
+        {/* Contenido — z:1, necesario para quedar por delante del canvas absoluto sin
+            depender del orden de stacking de elementos estáticos (h2/p/grid no tenían
+            position propio) */}
+        <div style={{ position: 'relative', zIndex: 1 }}>
         {/* Section title — centered */}
         <h2
           className="font-playfair"
@@ -425,6 +436,7 @@ export default function ServiciosSection() {
           meticuloso en cada sesión. Porque sabemos que un buen manicure no es solo estética:
           es la confianza que llevas contigo a todas partes.
         </p>
+        </div>
       </section>
 
       {/* ── MODAL ─────────────────────────────────────────────────── */}
