@@ -11,7 +11,7 @@
 - [x] SECTION-SERVICIOS completo (grid + modal con carrusel — varias rondas de fixes, ver abajo)
 - [x] SECTION-TESTIMONIOS completo (marquee CSS de comentarios reales de Instagram)
 - [x] SECTION-CTA-FINAL-FOOTER completo (`CTAFinalSection.tsx` + `Footer.tsx`, ver sesión 2026-06-23)
-- [ ] SVG botanicals animados (assets existen: flores-hero-final.svg, mano-hero-final.svg — usados estáticos en Hero, sin animación stroke-dashoffset todavía)
+- [x] SVG botanicals: entrada del Hero ahora se repite con ScrollTrigger al volver a subir (ver sesión 2026-06-25). Pendiente aparte: SVG nuevo y distinto para CTA Final (idea propia de Joan, aún sin construir — NO usar las flores ahí, sería repetitivo).
 - [ ] Globo de chat animado
 - [x] Flujo WhatsApp — funciona en Hero, Servicios y CTA Final, todos con el mismo número real de negocio (`56988210335`) desde la sesión 2026-06-23
 - [ ] Lenis smooth scroll
@@ -55,9 +55,17 @@ Comportamiento: **flotación 100% autónoma** — sin reaccionar a mouse ni scro
 
 Verificado: `npm run build` sin errores TS/lint, `npm run dev` levantó y respondió 200. **Pendiente: confirmación visual real de Joan en su celular vía Vercel** (igual que las secciones anteriores) — el push ya está hecho para que el auto-deploy lo refleje.
 
-**Siguiente paso del roadmap 9/10:** SVG botanicals animados (stroke-dashoffset al hacer scroll), después Lenis al final (es el que más puede chocar con cosas existentes — ScrollTrigger de Servicios, scroll bloqueado del modal).
+**Siguiente paso del roadmap 9/10 (en su momento):** SVG botanicals animados, después Lenis al final (es el que más puede chocar con cosas existentes — ScrollTrigger de Servicios, scroll bloqueado del modal).
 
 **Ajuste mismo día (commit `7f5a1e1`):** Joan probó en su celular vía Vercel y pidió 2 cosas — (1) las partículas se veían cuadradas (`PointsMaterial` sin `map` dibuja sprites cuadrados por defecto): se agregó una textura circular generada por canvas (radial gradient blanco→transparente) como `map`/`alphaMap`. (2) Agregar el mismo fondo a la sección Servicios. `ParticleScene` ahora acepta prop `density: 'normal' | 'subtle'` (Hero sigue en 'normal' 120/300, Servicios usa 'subtle' 60/150 porque queda mayormente tapado por el grid de cards). **Detalle de stacking importante si se reutiliza este patrón de nuevo:** en Servicios el título/grid no tenían `position` propio (a diferencia del Hero, donde todo ya estaba posicionado) — un canvas absoluto con z-index:0 como hermano de contenido *estático* pintaría POR ENCIMA del contenido, no detrás, por las reglas de stacking de CSS (los elementos no posicionados pintan antes que los posicionados de nivel 0). Se resolvió envolviendo todo el contenido de la sección en un `<div style={{position:'relative', zIndex:1}}>`. Si se agrega `ParticleBackground` a otra sección (CTA Final, Testimonios), revisar primero si su contenido ya tiene `position`/`zIndex` explícito o si necesita el mismo wrapper.
+
+## SESIÓN 2026-06-25 (continuación — Hero ScrollTrigger replay)
+
+Commit `78416e4` — el timeline de entrada del Hero (logo → flores draw-on → texto → CTA → mano) pasó de "una vez al montar" a `ScrollTrigger` (`start: 'top 80%'`, `toggleActions: 'restart none restart none'`): en la carga inicial se ve igual que antes, pero ahora se repite si el usuario baja a otra sección y vuelve a subir al Hero. Cambio acotado 100% a `Hero.tsx`. Spec: `docs/superpowers/specs/2026-06-25-hero-scrolltrigger-replay-design.md`.
+
+**Decisión importante para no olvidar:** se descartó usar `flores-hero-final.svg` como decoración del CTA Final (hubiera sido repetitivo, ya se usa en el Hero). **Joan tiene una idea propia para un SVG nuevo y distinto para esa sección — todavía no lo ha construido.** Cuando esté listo ese asset, retomar la pieza "CTA final decorations" de la skill `joart-svg-botanicals` con ese SVG nuevo (no antes).
+
+**Roadmap 9/10 — queda solo:** Lenis smooth scroll (último paso, mayor riesgo de cruce con ScrollTrigger de Servicios y el scroll bloqueado del modal).
 
 ## ASSETS DISPONIBLES
 - Mano ilustrada: `public/assets/mano-hero-final.svg`
