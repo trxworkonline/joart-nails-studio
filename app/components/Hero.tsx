@@ -3,9 +3,13 @@
 import { useEffect, useRef } from 'react';
 import Image from 'next/image';
 import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import ParticleBackground from './ParticleBackground';
 
+gsap.registerPlugin(ScrollTrigger);
+
 export default function Hero() {
+  const heroRef    = useRef<HTMLElement>(null);
   const logoRef    = useRef<HTMLDivElement>(null);
   const floresRef  = useRef<HTMLDivElement>(null);
   const h1Ref      = useRef<HTMLHeadingElement>(null);
@@ -85,7 +89,17 @@ export default function Hero() {
         }
 
         // --- GSAP TIMELINE ---
-        const tl = gsap.timeline();
+        // ScrollTrigger en vez de play-on-mount: en la carga inicial el Hero ya
+        // está en viewport (top en 0, por debajo de "80%") así que se dispara de
+        // inmediato igual que antes; "restart" en onEnterBack hace que se repita
+        // si el usuario baja y vuelve a subir al Hero.
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: heroRef.current,
+            start: 'top 80%',
+            toggleActions: 'restart none restart none',
+          },
+        });
         tlRef.current = tl;
 
         // 1. Logo fade-in (estado inicial opacity:0 viene del JSX)
@@ -129,6 +143,7 @@ export default function Hero() {
     return () => {
       dead = true;
       cancelAnimationFrame(raf);
+      tlRef.current?.scrollTrigger?.kill();
       tlRef.current?.kill();
     };
   }, []);
@@ -137,6 +152,7 @@ export default function Hero() {
 
   return (
     <section
+      ref={heroRef}
       className="relative overflow-hidden"
       style={{
         backgroundColor: '#EDE3DC',
