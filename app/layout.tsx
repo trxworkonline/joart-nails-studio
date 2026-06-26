@@ -24,7 +24,7 @@ const poppins = Poppins({
 });
 
 const SITE_URL = "https://joart-web.vercel.app";
-const SITE_TITLE = "JoArt Nails Studio";
+const SITE_TITLE = "JoArt Nails Studio · Nail Art & Manicura en Ñuñoa";
 const SITE_DESCRIPTION = "Manicura, pedicura y nail art en Ñuñoa, Santiago. Reserva por WhatsApp.";
 
 export const metadata: Metadata = {

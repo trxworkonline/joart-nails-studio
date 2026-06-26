@@ -8,6 +8,12 @@ export default function CTAFinalSection() {
   const igHref = 'https://instagram.com/joart.cl';
   const shouldReduceMotion = useReducedMotion();
 
+  const floatTransition = {
+    duration: 2.5,
+    repeat: Infinity,
+    ease: 'easeInOut',
+  } as const;
+
   return (
     <motion.section
       initial={shouldReduceMotion ? false : { opacity: 0, y: 16 }}
@@ -25,29 +31,31 @@ export default function CTAFinalSection() {
         textAlign: 'center',
       }}
     >
-      {/* Texto — centrado arriba, mismo tratamiento de h2 que Servicios/Testimonios */}
       <div>
         <h2
           className="font-playfair"
           style={{ color: '#A07860', fontSize: 'clamp(28px, 7vw, 34px)', lineHeight: 1.15, margin: 0 }}
         >
-          Sigue el proceso
+          ¿Lista para tus nails?
         </h2>
         <p className="font-poppins" style={{ color: '#8B6A6A', fontSize: 15, marginTop: 10 }}>
-          Míranos en Instagram o escríbenos ya.
+          Cuéntanos qué diseño sueñas y te respondemos hoy.
         </p>
       </div>
 
-      {/* Botellas — centradas abajo, mismo efecto de profundidad escalonada, a mayor escala */}
-      <div style={{ position: 'relative', width: 162, height: 210, marginTop: 48 }}>
-        {/* WhatsApp — atrás, más chica, desplazada arriba-izquierda */}
+      {/* Container ampliado 30px para acomodar la etiqueta bajo la botella WA */}
+      <div style={{ position: 'relative', width: 162, height: 240, marginTop: 48 }}>
+
+        {/* WhatsApp — flota para señalizar que es tappable */}
         <motion.a
           href={waHref}
           target="_blank"
           rel="noopener noreferrer"
           aria-label="Escríbenos por WhatsApp"
+          animate={shouldReduceMotion ? {} : { y: [0, -7, 0] }}
+          transition={floatTransition}
           whileTap={{ scale: 0.93 }}
-          style={{ position: 'absolute', left: 0, bottom: 14, width: 84, height: 185, zIndex: 1, display: 'block' }}
+          style={{ position: 'absolute', left: 0, top: 11, width: 84, height: 185, zIndex: 1, display: 'block' }}
         >
           <span
             aria-hidden="true"
@@ -60,7 +68,7 @@ export default function CTAFinalSection() {
               transform: 'translate(-50%, -50%)',
               borderRadius: '50%',
               background:
-                'radial-gradient(circle, rgba(160,120,96,0.55) 0%, rgba(160,120,96,0.3) 40%, rgba(160,120,96,0) 72%)',
+                'radial-gradient(circle, rgba(160,120,96,0.65) 0%, rgba(160,120,96,0.35) 40%, rgba(160,120,96,0) 72%)',
               filter: 'blur(14px)',
               zIndex: 0,
             }}
@@ -74,14 +82,36 @@ export default function CTAFinalSection() {
           />
         </motion.a>
 
-        {/* Instagram — al frente, tamaño completo, anclada al borde derecho */}
+        {/* Etiqueta bajo la botella WA — pulsa en sync con el float */}
+        <motion.p
+          aria-hidden="true"
+          className="font-poppins"
+          animate={shouldReduceMotion ? {} : { opacity: [0.55, 1, 0.55] }}
+          transition={floatTransition}
+          style={{
+            position: 'absolute',
+            left: 0,
+            top: 204,
+            width: 84,
+            textAlign: 'center',
+            fontSize: 10,
+            color: '#A07860',
+            letterSpacing: '0.14em',
+            margin: 0,
+            pointerEvents: 'none',
+          }}
+        >
+          ESCRÍBENOS
+        </motion.p>
+
+        {/* Instagram — al frente, estática */}
         <motion.a
           href={igHref}
           target="_blank"
           rel="noopener noreferrer"
           aria-label="Síguenos en Instagram"
           whileTap={{ scale: 0.93 }}
-          style={{ position: 'absolute', right: 0, bottom: 0, width: 93, height: 210, zIndex: 2, display: 'block' }}
+          style={{ position: 'absolute', right: 0, top: 0, width: 93, height: 210, zIndex: 2, display: 'block' }}
         >
           <span
             aria-hidden="true"
