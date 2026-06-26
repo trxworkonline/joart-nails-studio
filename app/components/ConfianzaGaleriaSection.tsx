@@ -179,14 +179,14 @@ export default function ConfianzaGaleriaSection() {
             <Image
               src={src}
               alt={titulo}
-              width={56}
-              height={56}
+              width={124}
+              height={124}
               style={{ objectFit: 'contain', marginBottom: 10 }}
             />
             <p
               className="font-playfair"
               style={{
-                fontSize: 12,
+                fontSize: 14,
                 fontWeight: 700,
                 color: '#7A5040',
                 margin: '0 0 5px',
@@ -198,7 +198,7 @@ export default function ConfianzaGaleriaSection() {
             <p
               className="font-poppins"
               style={{
-                fontSize: 11,
+                fontSize: 13,
                 color: '#8B6A6A',
                 margin: 0,
                 lineHeight: 1.55,
