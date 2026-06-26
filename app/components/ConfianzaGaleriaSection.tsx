@@ -151,9 +151,11 @@ function Carrusel() {
 }
 
 export default function ConfianzaGaleriaSection() {
+  const reduced = useReducedMotion();
+
   return (
     <section style={{ padding: '72px 0 80px' }}>
-      {/* Fila de 3 íconos */}
+      {/* Fila de 3 íconos con entrada animada escalonada */}
       <div
         style={{
           display: 'flex',
@@ -165,9 +167,13 @@ export default function ConfianzaGaleriaSection() {
           boxSizing: 'border-box',
         }}
       >
-        {ICONOS.map(({ src, titulo, texto }) => (
-          <div
+        {ICONOS.map(({ src, titulo, texto }, idx) => (
+          <motion.div
             key={titulo}
+            initial={reduced ? false : { opacity: 0, y: 28 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.25 }}
+            transition={reduced ? { duration: 0 } : { duration: 0.55, ease: 'easeOut', delay: idx * 0.15 }}
             style={{
               flex: 1,
               display: 'flex',
@@ -179,8 +185,8 @@ export default function ConfianzaGaleriaSection() {
             <Image
               src={src}
               alt={titulo}
-              width={124}
-              height={124}
+              width={164}
+              height={164}
               style={{ objectFit: 'contain', marginBottom: 10 }}
             />
             <p
@@ -206,7 +212,7 @@ export default function ConfianzaGaleriaSection() {
             >
               {texto}
             </p>
-          </div>
+          </motion.div>
         ))}
       </div>
 
