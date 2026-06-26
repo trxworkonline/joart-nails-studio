@@ -43,17 +43,15 @@ export default function CTAFinalSection() {
         </p>
       </div>
 
-      {/* Container ampliado 30px para acomodar la etiqueta bajo la botella WA */}
+      {/* Container: WA al frente-derecha (grande), IG atrás-izquierda (pequeña) */}
       <div style={{ position: 'relative', width: 162, height: 240, marginTop: 48 }}>
 
-        {/* WhatsApp — flota para señalizar que es tappable */}
+        {/* Instagram — atrás, más chica, lado izquierdo */}
         <motion.a
-          href={waHref}
+          href={igHref}
           target="_blank"
           rel="noopener noreferrer"
-          aria-label="Escríbenos por WhatsApp"
-          animate={shouldReduceMotion ? {} : { y: [0, -7, 0] }}
-          transition={floatTransition}
+          aria-label="Síguenos en Instagram"
           whileTap={{ scale: 0.93 }}
           style={{ position: 'absolute', left: 0, top: 11, width: 84, height: 185, zIndex: 1, display: 'block' }}
         >
@@ -68,48 +66,28 @@ export default function CTAFinalSection() {
               transform: 'translate(-50%, -50%)',
               borderRadius: '50%',
               background:
-                'radial-gradient(circle, rgba(160,120,96,0.65) 0%, rgba(160,120,96,0.35) 40%, rgba(160,120,96,0) 72%)',
+                'radial-gradient(circle, rgba(232,180,192,0.7) 0%, rgba(232,180,192,0.35) 40%, rgba(232,180,192,0) 72%)',
               filter: 'blur(14px)',
               zIndex: 0,
             }}
           />
           <Image
-            src="/assets/footer/esmalte-whatsapp.png"
-            alt="Escríbenos por WhatsApp"
+            src="/assets/footer/esmalte-instagram.png"
+            alt="Síguenos en Instagram"
             width={84}
             height={185}
             style={{ position: 'relative', zIndex: 1, width: '100%', height: '100%', objectFit: 'contain' }}
           />
         </motion.a>
 
-        {/* Etiqueta bajo la botella WA — pulsa en sync con el float */}
-        <motion.p
-          aria-hidden="true"
-          className="font-poppins"
-          animate={shouldReduceMotion ? {} : { opacity: [0.55, 1, 0.55] }}
-          transition={floatTransition}
-          style={{
-            position: 'absolute',
-            left: 0,
-            top: 204,
-            width: 84,
-            textAlign: 'center',
-            fontSize: 10,
-            color: '#A07860',
-            letterSpacing: '0.14em',
-            margin: 0,
-            pointerEvents: 'none',
-          }}
-        >
-          ESCRÍBENOS
-        </motion.p>
-
-        {/* Instagram — al frente, estática */}
+        {/* WhatsApp — al frente, más grande, lado derecho, flota */}
         <motion.a
-          href={igHref}
+          href={waHref}
           target="_blank"
           rel="noopener noreferrer"
-          aria-label="Síguenos en Instagram"
+          aria-label="Escríbenos por WhatsApp"
+          animate={shouldReduceMotion ? {} : { y: [0, -7, 0] }}
+          transition={floatTransition}
           whileTap={{ scale: 0.93 }}
           style={{ position: 'absolute', right: 0, top: 0, width: 93, height: 210, zIndex: 2, display: 'block' }}
         >
@@ -124,19 +102,41 @@ export default function CTAFinalSection() {
               transform: 'translate(-50%, -50%)',
               borderRadius: '50%',
               background:
-                'radial-gradient(circle, rgba(232,180,192,0.95) 0%, rgba(232,180,192,0.55) 40%, rgba(232,180,192,0) 72%)',
+                'radial-gradient(circle, rgba(160,120,96,0.65) 0%, rgba(160,120,96,0.35) 40%, rgba(160,120,96,0) 72%)',
               filter: 'blur(14px)',
               zIndex: 0,
             }}
           />
           <Image
-            src="/assets/footer/esmalte-instagram.png"
-            alt="Síguenos en Instagram"
+            src="/assets/footer/esmalte-whatsapp.png"
+            alt="Escríbenos por WhatsApp"
             width={93}
             height={210}
             style={{ position: 'relative', zIndex: 1, width: '100%', height: '100%', objectFit: 'contain' }}
           />
         </motion.a>
+
+        {/* Etiqueta bajo la botella WA — centrada bajo la botella derecha, pulsa en sync */}
+        <motion.p
+          aria-hidden="true"
+          className="font-poppins"
+          animate={shouldReduceMotion ? {} : { opacity: [0.55, 1, 0.55] }}
+          transition={floatTransition}
+          style={{
+            position: 'absolute',
+            right: 0,
+            top: 218,
+            width: 93,
+            textAlign: 'center',
+            fontSize: 10,
+            color: '#A07860',
+            letterSpacing: '0.14em',
+            margin: 0,
+            pointerEvents: 'none',
+          }}
+        >
+          ESCRÍBENOS
+        </motion.p>
       </div>
     </motion.section>
   );
