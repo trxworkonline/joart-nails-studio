@@ -185,8 +185,8 @@ export default function ConfianzaGaleriaSection() {
             <Image
               src={src}
               alt={titulo}
-              width={164}
-              height={164}
+              width={192}
+              height={192}
               style={{ objectFit: 'contain', marginBottom: 10 }}
             />
             <p
