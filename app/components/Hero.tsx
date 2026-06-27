@@ -202,8 +202,8 @@ export default function Hero() {
         <Image
           src="/assets/logo.png"
           alt="JoArt Nails Studio"
-          width={110}
-          height={110}
+          width={150}
+          height={150}
           style={{ objectFit: 'contain', mixBlendMode: 'multiply' }}
           priority
         />
