@@ -187,7 +187,7 @@ export default function ConfianzaGaleriaSection() {
               alt={titulo}
               width={192}
               height={192}
-              style={{ objectFit: 'contain', marginBottom: 10 }}
+              style={{ height: 120, width: 'auto', objectFit: 'contain', marginBottom: 10 }}
             />
             <p
               className="font-playfair"
